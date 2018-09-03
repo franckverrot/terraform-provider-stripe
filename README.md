@@ -25,6 +25,8 @@ $ make build
 
 ## Using the provider
 
+### Basic Usage
+
 In order for Terraform to pick up your API token, start by exporting the
 special environment variable that will be loaded automatically for you:
 
@@ -55,6 +57,12 @@ resource "stripe_plan" "my_product_plan1" {
   active   = true
 }
 ```
+
+### Supported features
+
+[x] Products
+[x] Plans
+
 
 ## Developing the Provider
 
