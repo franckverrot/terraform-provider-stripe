@@ -15,6 +15,9 @@ func resourceStripePlan() *schema.Resource {
 		Read:   resourceStripePlanRead,
 		Update: resourceStripePlanUpdate,
 		Delete: resourceStripePlanDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"nickname": &schema.Schema{

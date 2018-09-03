@@ -15,6 +15,9 @@ func resourceStripeProduct() *schema.Resource {
 		Read:   resourceStripeProductRead,
 		Update: resourceStripeProductUpdate,
 		Delete: resourceStripeProductDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
