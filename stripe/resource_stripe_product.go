@@ -28,6 +28,18 @@ func resourceStripeProduct() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"statement_descriptor": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"unit_label": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"active": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -36,6 +48,9 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	productName := d.Get("name").(string)
 	productType := d.Get("type").(string)
+	productStatementDescriptor := d.Get("statement_descriptor").(string)
+	productUnitLabel := d.Get("unit_label").(string)
+	productActive := d.Get("active").(bool)
 
 	var stripeProductType stripe.ProductType
 
@@ -52,6 +67,19 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 		Name: stripe.String(productName),
 		Type: stripe.String(string(stripeProductType)),
 	}
+
+	if productActive {
+		params.Active = stripe.Bool(productActive)
+	}
+
+	if productStatementDescriptor != "" {
+		params.StatementDescriptor = stripe.String(productStatementDescriptor)
+	}
+
+	if productUnitLabel != "" {
+		params.UnitLabel = stripe.String(productUnitLabel)
+	}
+
 	product, err := client.Products.New(params)
 
 	if err != nil {
@@ -72,6 +100,9 @@ func resourceStripeProductRead(d *schema.ResourceData, m interface{}) error {
 	} else {
 		d.Set("name", product.Name)
 		d.Set("type", product.Type)
+		d.Set("statement_descriptor", product.StatementDescriptor)
+		d.Set("unit_label", product.UnitLabel)
+		d.Set("active", product.Active)
 	}
 	return nil
 }
@@ -84,7 +115,19 @@ func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
 		params.Name = stripe.String(d.Get("name").(string))
 	}
 	if d.HasChange("type") {
-		params.Type = stripe.String(d.Get("Type").(string))
+		params.Type = stripe.String(d.Get("type").(string))
+	}
+
+	if d.HasChange("statement_descriptor") {
+		params.Type = stripe.String(d.Get("statement_descriptor").(string))
+	}
+
+	if d.HasChange("unit_label") {
+		params.Type = stripe.String(d.Get("unit_label").(string))
+	}
+
+	if d.HasChange("active") {
+		params.Type = stripe.String(d.Get("active").(string))
 	}
 
 	_, err := client.Products.Update(d.Id(), &params)
