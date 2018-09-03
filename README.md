@@ -61,7 +61,18 @@ resource "stripe_plan" "my_product_plan1" {
 ### Supported features
 
 - [x] Products
+  - name
+  - type
+  - active
+  - statement descriptor
+  - unit label
 - [x] Plans
+  - nickname
+  - active
+  - amount
+  - currency
+  - interval
+  - product
 
 
 ## Developing the Provider
