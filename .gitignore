@@ -1,0 +1,5 @@
+.terraform/
+pkg/
+terraform.tfstate*
+crash.log
+terraform-provider-stripe
