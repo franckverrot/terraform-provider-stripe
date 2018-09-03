@@ -60,8 +60,8 @@ resource "stripe_plan" "my_product_plan1" {
 
 ### Supported features
 
-[x] Products
-[x] Plans
+- [x] Products
+- [x] Plans
 
 
 ## Developing the Provider
