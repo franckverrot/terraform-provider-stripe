@@ -19,8 +19,9 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"stripe_product": resourceStripeProduct(),
-			"stripe_plan":    resourceStripePlan(),
+			"stripe_product":          resourceStripeProduct(),
+			"stripe_plan":             resourceStripePlan(),
+			"stripe_webhook_endpoint": resourceStripeWebhookEndpoint(),
 		},
 
 		ConfigureFunc: providerConfigure,

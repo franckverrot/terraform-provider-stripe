@@ -73,6 +73,9 @@ resource "stripe_plan" "my_product_plan1" {
   - currency
   - interval
   - product
+- [x] Webhook endpoints
+  - url
+  - enabled_events
 
 
 ## Developing the Provider

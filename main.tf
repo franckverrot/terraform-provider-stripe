@@ -1,4 +1,4 @@
-variable "stripe_api_token" {} # populate this by exporting TF_VAR_api_token
+variable "stripe_api_token" {} # populate this by exporting TF_VAR_stripe_api_token
 
 provider "stripe" {
   api_token = "${var.stripe_api_token}"
@@ -14,4 +14,14 @@ resource "stripe_plan" "my_product_plan" {
   amount   = 12345
   interval = "month"                           # day week month year
   currency = "usd"
+}
+
+resource "stripe_webhook_endpoint" "my_endpoint" {
+  url = "https://mydomain.example.com/webhook"
+
+  enabled_events = [
+    "charge.succeeded",
+    "charge.failed",
+    "source.chargeable",
+  ]
 }
