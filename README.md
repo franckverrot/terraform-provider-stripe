@@ -68,7 +68,7 @@ resource "stripe_plan" "my_product_plan1" {
   - unit label
 - [x] Plans
   - nickname
-  - active
+  - active (Default: true)
   - amount
   - currency
   - interval

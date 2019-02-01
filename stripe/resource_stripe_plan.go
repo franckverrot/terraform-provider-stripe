@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/stripe/stripe-go"
+	stripe "github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/client"
 )
 
@@ -27,6 +27,7 @@ func resourceStripePlan() *schema.Resource {
 			"active": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  true,
 			},
 			"amount": &schema.Schema{
 				Type:     schema.TypeInt,

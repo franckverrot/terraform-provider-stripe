@@ -14,5 +14,4 @@ resource "stripe_plan" "my_product_plan" {
   amount   = 12345
   interval = "month"                           # day week month year
   currency = "usd"
-  active   = true
 }
