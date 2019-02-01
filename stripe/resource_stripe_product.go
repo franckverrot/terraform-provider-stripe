@@ -2,7 +2,7 @@ package stripe
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/stripe/stripe-go"
+	stripe "github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/client"
 
 	"fmt"
@@ -39,6 +39,7 @@ func resourceStripeProduct() *schema.Resource {
 			"active": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  true,
 			},
 		},
 	}

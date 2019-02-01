@@ -63,7 +63,7 @@ resource "stripe_plan" "my_product_plan1" {
 - [x] Products
   - name
   - type
-  - active
+  - active (Default: true)
   - statement descriptor
   - unit label
 - [x] Plans
