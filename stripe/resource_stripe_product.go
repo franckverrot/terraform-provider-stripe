@@ -83,29 +83,27 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 
 	product, err := client.Products.New(params)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		log.Printf("[INFO] Create product: %s", productName)
 		d.SetId(product.ID)
 	}
-	return nil
+
+	return err
 }
 
 func resourceStripeProductRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	product, err := client.Products.Get(d.Id(), nil)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		d.Set("name", product.Name)
 		d.Set("type", product.Type)
 		d.Set("statement_descriptor", product.StatementDescriptor)
 		d.Set("unit_label", product.UnitLabel)
 		d.Set("active", product.Active)
 	}
-	return nil
+
+	return err
 }
 
 func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
@@ -133,21 +131,16 @@ func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
 
 	_, err := client.Products.Update(d.Id(), &params)
 
-	if err != nil {
-		return err
-	} else {
-		return nil
-	}
+	return err
 }
 
 func resourceStripeProductDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	_, err := client.Products.Del(d.Id(), nil)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		d.SetId("")
-		return nil
 	}
+
+	return err
 }

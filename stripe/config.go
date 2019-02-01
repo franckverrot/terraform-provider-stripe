@@ -6,6 +6,7 @@ import (
 	"github.com/stripe/stripe-go/client"
 )
 
+// Config stores Stripe's API configuration
 type Config struct {
 	APIToken string
 }

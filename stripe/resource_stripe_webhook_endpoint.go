@@ -2,7 +2,7 @@ package stripe
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/stripe/stripe-go"
+	stripe "github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/client"
 
 	"log"
@@ -49,26 +49,24 @@ func resourceStripeWebhookEndpointCreate(d *schema.ResourceData, m interface{}) 
 
 	webhookEndpoint, err := client.WebhookEndpoints.New(params)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		log.Printf("[INFO] Create wehbook endpoint: %s", webhookEndpointURL)
 		d.SetId(webhookEndpoint.ID)
 	}
-	return nil
+
+	return err
 }
 
 func resourceStripeWebhookEndpointRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	webhookEndpoint, err := client.WebhookEndpoints.Get(d.Id(), nil)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		d.Set("url", webhookEndpoint.URL)
 		d.Set("enabled_events", webhookEndpoint.EnabledEvents)
 	}
-	return nil
+
+	return err
 }
 
 func resourceStripeWebhookEndpointUpdate(d *schema.ResourceData, m interface{}) error {
@@ -90,21 +88,16 @@ func resourceStripeWebhookEndpointUpdate(d *schema.ResourceData, m interface{}) 
 
 	_, err := client.WebhookEndpoints.Update(d.Id(), &params)
 
-	if err != nil {
-		return err
-	} else {
-		return nil
-	}
+	return err
 }
 
 func resourceStripeWebhookEndpointDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	_, err := client.WebhookEndpoints.Del(d.Id(), nil)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		d.SetId("")
-		return nil
 	}
+
+	return err
 }

@@ -75,9 +75,7 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 
 	plan, err := client.Plans.New(params)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		if planNickname != "" {
 			log.Printf("[INFO] Create plan: %s (%s)", plan.Nickname, plan.ID)
 		} else {
@@ -85,7 +83,8 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 		}
 		d.SetId(plan.ID)
 	}
-	return nil
+
+	return err
 }
 
 func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
@@ -94,16 +93,16 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 
 	if err != nil {
 		d.SetId("")
-		return nil
+	} else {
+		d.Set("nickname", plan.Nickname)
+		d.Set("product", plan.Product)
+		d.Set("amount", plan.Amount)
+		d.Set("interval", plan.Interval)
+		d.Set("currency", plan.Currency)
+		d.Set("active", plan.Active)
 	}
 
-	d.Set("nickname", plan.Nickname)
-	d.Set("product", plan.Product)
-	d.Set("amount", plan.Amount)
-	d.Set("interval", plan.Interval)
-	d.Set("currency", plan.Currency)
-	d.Set("active", plan.Active)
-	return nil
+	return err
 }
 
 func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
@@ -126,21 +125,16 @@ func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
 
 	d.Partial(false)
 
-	if err != nil {
-		return err
-	} else {
-		return nil
-	}
+	return err
 }
 
 func resourceStripePlanDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	_, err := client.Plans.Del(d.Id(), nil)
 
-	if err != nil {
-		return err
-	} else {
+	if err == nil {
 		d.SetId("")
-		return nil
 	}
+
+	return err
 }
