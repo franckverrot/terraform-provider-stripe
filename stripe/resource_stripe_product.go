@@ -120,15 +120,15 @@ func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if d.HasChange("statement_descriptor") {
-		params.Type = stripe.String(d.Get("statement_descriptor").(string))
+		params.StatementDescriptor = stripe.String(d.Get("statement_descriptor").(string))
 	}
 
 	if d.HasChange("unit_label") {
-		params.Type = stripe.String(d.Get("unit_label").(string))
+		params.UnitLabel = stripe.String(d.Get("unit_label").(string))
 	}
 
 	if d.HasChange("active") {
-		params.Type = stripe.String(d.Get("active").(string))
+		params.Active = stripe.Bool(d.Get("active").(bool))
 	}
 
 	_, err := client.Products.Update(d.Id(), &params)
