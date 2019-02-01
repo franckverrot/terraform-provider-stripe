@@ -38,6 +38,7 @@ can use it to configure the provider.  Here's an example that will:
 
   * Create a product
   * Create a plan for that product
+  * Create a webhook endpoint for a few events
 
 ```hcl
 provider "stripe" {
@@ -54,7 +55,16 @@ resource "stripe_plan" "my_product_plan1" {
   amount   = 12345
   interval = "month"                           # day week month year
   currency = "usd"
-  active   = true
+}
+
+resource "stripe_webhook_endpoint" "my_endpoint" {
+  url = "https://mydomain.example.com/webhook"
+
+  enabled_events = [
+    "charge.succeeded",
+    "charge.failed",
+    "source.chargeable",
+  ]
 }
 ```
 
