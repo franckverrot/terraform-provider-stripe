@@ -28,29 +28,31 @@ func resourceStripeWebhookEndpoint() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 			},
+			"connect": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 	}
 }
 
 func resourceStripeWebhookEndpointCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
-	webhookEndpointURL := d.Get("url").(string)
-	rawEnabledEvents := d.Get("enabled_events").([]interface{})
-	webhookEndpointEnabledEvents := make([]*string, len(rawEnabledEvents))
-	for i, v := range rawEnabledEvents {
-		stringEvent := v.(string)
-		webhookEndpointEnabledEvents[i] = &stringEvent
-	}
+	url := d.Get("url").(string)
 
 	params := &stripe.WebhookEndpointParams{
-		URL:           stripe.String(webhookEndpointURL),
-		EnabledEvents: webhookEndpointEnabledEvents,
+		URL:           stripe.String(url),
+		EnabledEvents: expandStringList(d, "enabled_events"),
+	}
+
+	if connect, ok := d.GetOk("connect"); ok {
+		params.Connect = stripe.Bool(connect.(bool))
 	}
 
 	webhookEndpoint, err := client.WebhookEndpoints.New(params)
 
 	if err == nil {
-		log.Printf("[INFO] Create wehbook endpoint: %s", webhookEndpointURL)
+		log.Printf("[INFO] Create wehbook endpoint: %s", url)
 		d.SetId(webhookEndpoint.ID)
 	}
 
@@ -61,12 +63,15 @@ func resourceStripeWebhookEndpointRead(d *schema.ResourceData, m interface{}) er
 	client := m.(*client.API)
 	webhookEndpoint, err := client.WebhookEndpoints.Get(d.Id(), nil)
 
-	if err == nil {
-		d.Set("url", webhookEndpoint.URL)
-		d.Set("enabled_events", webhookEndpoint.EnabledEvents)
+	if err != nil {
+		return err
 	}
 
-	return err
+	d.Set("url", webhookEndpoint.URL)
+	d.Set("enabled_events", webhookEndpoint.EnabledEvents)
+	d.Set("connect", webhookEndpoint.Connect)
+
+	return nil
 }
 
 func resourceStripeWebhookEndpointUpdate(d *schema.ResourceData, m interface{}) error {
@@ -76,19 +81,22 @@ func resourceStripeWebhookEndpointUpdate(d *schema.ResourceData, m interface{}) 
 	if d.HasChange("name") {
 		params.URL = stripe.String(d.Get("url").(string))
 	}
+
 	if d.HasChange("enabled_events") {
-		rawEnabledEvents := d.Get("enabled_events").([]interface{})
-		enabledEvents := make([]*string, len(rawEnabledEvents))
-		for i, v := range rawEnabledEvents {
-			stringEvent := v.(string)
-			enabledEvents[i] = &stringEvent
-		}
-		params.EnabledEvents = enabledEvents
+		params.EnabledEvents = expandStringList(d, "enabled_events")
+	}
+
+	if d.HasChange("connect") {
+		params.Connect = stripe.Bool(d.Get("connect").(bool))
 	}
 
 	_, err := client.WebhookEndpoints.Update(d.Id(), &params)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	return resourceStripeWebhookEndpointRead(d, m)
 }
 
 func resourceStripeWebhookEndpointDelete(d *schema.ResourceData, m interface{}) error {
