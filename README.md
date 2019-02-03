@@ -68,24 +68,11 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
 }
 ```
 
-### Supported features
+### Supported resources
 
-- [x] Products
-  - name
-  - type
-  - active (Default: true)
-  - statement descriptor
-  - unit label
-- [x] Plans
-  - nickname
-  - active (Default: true)
-  - amount
-  - currency
-  - interval
-  - product
-- [x] Webhook endpoints
-  - url
-  - enabled_events
+- [Products](https://stripe.com/docs/api/service_products)
+- [Plans](https://stripe.com/docs/api/plans)
+- [Webhook Endpoints](https://stripe.com/docs/api/webhook_endpoints)
 
 
 ## Developing the Provider
