@@ -25,3 +25,7 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
     "source.chargeable",
   ]
 }
+
+output "webhook_secret" {
+  value = "${stripe_webhook_endpoint.my_endpoint.secret}"
+}

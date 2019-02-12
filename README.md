@@ -98,6 +98,8 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
   - [x] url
   - [x] enabled_events (list)
   - [x] connect
+  - Computed:
+    - secret
 
 
 ## Developing the Provider
