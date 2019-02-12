@@ -54,7 +54,6 @@ func resourceStripePlan() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			// TODO Restore once we figure out how to properly delete this data with the Go client
 			"metadata": &schema.Schema{
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
