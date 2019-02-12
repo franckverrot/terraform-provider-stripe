@@ -37,12 +37,11 @@ func resourceStripeProduct() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
-			// TODO Restore once we figure out how to properly delete this data with the Go client
-			//"attributes": &schema.Schema{
-			//	Type: schema.TypeList,
-			//	Elem: &schema.Schema{Type: schema.TypeString},
-			//	Optional: true,
-			//},
+			"attributes": &schema.Schema{
+				Type:     schema.TypeList,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+				Optional: true,
+			},
 			"metadata": &schema.Schema{
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
@@ -89,7 +88,7 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 		params.Active = stripe.Bool(active.(bool))
 	}
 
-	//params.Attributes = expandAttributes(d)
+	params.Attributes = expandAttributes(d)
 
 	params.Metadata = expandMetadata(d)
 
@@ -124,7 +123,7 @@ func resourceStripeProductRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", product.Name)
 	d.Set("type", product.Type)
 	d.Set("active", product.Active)
-	//d.Set("attributes", product.Attributes)
+	d.Set("attributes", product.Attributes)
 	d.Set("metadata", product.Metadata)
 	d.Set("statement_descriptor", product.StatementDescriptor)
 	d.Set("unit_label", product.UnitLabel)
@@ -148,9 +147,9 @@ func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
 		params.Active = stripe.Bool(d.Get("active").(bool))
 	}
 
-	//if d.HasChange("attributes") {
-	//	params.Attributes = expandAttributes(d)
-	//}
+	if d.HasChange("attributes") {
+		params.Attributes = expandAttributes(d)
+	}
 
 	if d.HasChange("metadata") {
 		params.Metadata = expandMetadata(d)
