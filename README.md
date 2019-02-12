@@ -86,6 +86,7 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
 - [x] Webhook endpoints
   - url
   - enabled_events
+  - secret (computed variable, set on creation)
 
 
 ## Developing the Provider

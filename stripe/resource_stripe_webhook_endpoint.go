@@ -28,6 +28,10 @@ func resourceStripeWebhookEndpoint() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 			},
+			"secret": &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -52,6 +56,7 @@ func resourceStripeWebhookEndpointCreate(d *schema.ResourceData, m interface{}) 
 	if err == nil {
 		log.Printf("[INFO] Create wehbook endpoint: %s", webhookEndpointURL)
 		d.SetId(webhookEndpoint.ID)
+		d.Set("secret", webhookEndpoint.Secret)
 	}
 
 	return err
