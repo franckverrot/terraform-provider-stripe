@@ -43,13 +43,13 @@ func resourceStripeProduct() *schema.Resource {
 			//	Elem: &schema.Schema{Type: schema.TypeString},
 			//	Optional: true,
 			//},
-			//"metadata": &schema.Schema{
-			//	Type: schema.TypeMap,
-			//	Elem: &schema.Schema{
-			//		Type: schema.TypeString,
-			//	},
-			//	Optional: true,
-			//},
+			"metadata": &schema.Schema{
+				Type: schema.TypeMap,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional: true,
+			},
 			"statement_descriptor": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
@@ -90,8 +90,8 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	//params.Attributes = expandAttributes(d)
-	//
-	//params.Metadata = expandMetadata(d)
+
+	params.Metadata = expandMetadata(d)
 
 	if productStatementDescriptor != "" {
 		params.StatementDescriptor = stripe.String(productStatementDescriptor)
@@ -125,7 +125,7 @@ func resourceStripeProductRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("type", product.Type)
 	d.Set("active", product.Active)
 	//d.Set("attributes", product.Attributes)
-	//d.Set("metadata", product.Metadata)
+	d.Set("metadata", product.Metadata)
 	d.Set("statement_descriptor", product.StatementDescriptor)
 	d.Set("unit_label", product.UnitLabel)
 
@@ -151,10 +151,10 @@ func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
 	//if d.HasChange("attributes") {
 	//	params.Attributes = expandAttributes(d)
 	//}
-	//
-	//if d.HasChange("metadata") {
-	//	params.Metadata = expandMetadata(d)
-	//}
+
+	if d.HasChange("metadata") {
+		params.Metadata = expandMetadata(d)
+	}
 
 	if d.HasChange("statement_descriptor") {
 		params.StatementDescriptor = stripe.String(d.Get("statement_descriptor").(string))

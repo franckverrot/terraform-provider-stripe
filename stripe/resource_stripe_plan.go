@@ -55,13 +55,13 @@ func resourceStripePlan() *schema.Resource {
 				Optional: true,
 			},
 			// TODO Restore once we figure out how to properly delete this data with the Go client
-			//"metadata": &schema.Schema{
-			//	Type: schema.TypeMap,
-			//	Elem: &schema.Schema{
-			//		Type: schema.TypeString,
-			//	},
-			//	Optional: true,
-			//},
+			"metadata": &schema.Schema{
+				Type: schema.TypeMap,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional: true,
+			},
 			"nickname": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
@@ -119,7 +119,7 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 		params.IntervalCount = stripe.Int64(int64(intervalCount.(int)))
 	}
 
-	//params.Metadata = expandMetadata(d)
+	params.Metadata = expandMetadata(d)
 
 	if _, ok := d.GetOk("nickname"); ok {
 		params.Nickname = stripe.String(planNickname)
@@ -165,7 +165,7 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("currency", plan.Currency)
 		d.Set("interval", plan.Interval)
 		d.Set("interval_count", plan.IntervalCount)
-		//d.Set("metadata", plan.Metadata)
+		d.Set("metadata", plan.Metadata)
 		d.Set("nickname", plan.Nickname)
 		d.Set("product", plan.Product)
 		d.Set("tiers_mode", plan.TiersMode)
@@ -200,9 +200,9 @@ func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
 		params.IntervalCount = stripe.Int64(int64(d.Get("interval_count").(int)))
 	}
 
-	//if d.HasChange("metadata") {
-	//	params.Metadata = expandMetadata(d)
-	//}
+	if d.HasChange("metadata") {
+		params.Metadata = expandMetadata(d)
+	}
 
 	if d.HasChange("nickname") {
 		params.Nickname = stripe.String(d.Get("nickname").(string))
