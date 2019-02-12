@@ -2,7 +2,6 @@ package stripe
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"log"
 )
 
 func expandStringMap(m map[string]interface{}) map[string]string {
@@ -10,7 +9,6 @@ func expandStringMap(m map[string]interface{}) map[string]string {
 	for k, v := range m {
 		result[k] = v.(string)
 	}
-	log.Printf("expandedmetadata: %#v\n", result)
 	return result
 }
 
