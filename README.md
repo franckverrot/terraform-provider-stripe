@@ -68,24 +68,36 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
 }
 ```
 
-### Supported features
+### Supported resources
 
-- [x] Products
-  - name
-  - type
-  - active (Default: true)
-  - statement descriptor
-  - unit label
-- [x] Plans
-  - nickname
-  - active (Default: true)
-  - amount
-  - currency
-  - interval
-  - product
-- [x] Webhook endpoints
-  - url
-  - enabled_events
+- [x] [Products](https://stripe.com/docs/api/service_products)
+  - [x] name
+  - [x] type
+  - [x] active (Default: true)
+  - [x] attributes (list)
+  - [x] metadata (map)
+  - [x] statement descriptor
+  - [x] unit label
+- [x] [Plans](https://stripe.com/docs/api/plans)
+  - [x] active (Default: true)
+  - [x] aggregate usage
+  - [x] amount
+  - [x] billing scheme (Default: per_unit)
+  - [x] currency
+  - [x] interval
+  - [x] interval_count (Default: 1)
+  - [x] metadata (map)
+  - [x] nickname
+  - [x] product
+  - [ ] tiers
+  - [x] tiers mode
+  - [ ] transform_usage
+  - [x] trial period days
+  - [x] usage type (Default: licensed)
+- [x] [Webhook Endpoints](https://stripe.com/docs/api/webhook_endpoints)
+  - [x] url
+  - [x] enabled_events (list)
+  - [x] connect
 
 
 ## Developing the Provider
