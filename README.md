@@ -1,5 +1,12 @@
 # Terraform Stripe Provider
 
+This provider enables Stripe merchants to manage certain parts of their Stripe infrastructure—products, plans, webhook 
+endpoints—via Terraform.
+
+**Example use cases**
+* Create and update resources in a repeatable manner
+* Migrate resources from test mode to live mode
+* Clone resources across multiple Stripe accounts (e.g. different locales or brands)
 
 ## Requirements
 
