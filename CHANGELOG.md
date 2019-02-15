@@ -3,6 +3,7 @@
 ## Feb 14th 2019
 
   * Add support for more attributes in plan, product and webhooks
+  * Add support for webhook secrets
 
 
 ## Feb 3rd 2019

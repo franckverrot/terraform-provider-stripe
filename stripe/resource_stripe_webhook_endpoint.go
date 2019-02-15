@@ -56,7 +56,7 @@ func resourceStripeWebhookEndpointCreate(d *schema.ResourceData, m interface{}) 
 	webhookEndpoint, err := client.WebhookEndpoints.New(params)
 
 	if err == nil {
-		log.Printf("[INFO] Create wehbook endpoint: %s", url)
+		log.Printf("[INFO] Create webbook endpoint: %s", url)
 		d.SetId(webhookEndpoint.ID)
 		d.Set("secret", webhookEndpoint.Secret)
 	}
