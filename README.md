@@ -25,23 +25,27 @@ $ make build
 
 ## Using the provider
 
+If you're building the provider, follow the instructions to [install it as a plugin.](https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin) After placing it into your plugins directory,  run `terraform init` to initialize it.
+
 ### Basic Usage
 
-In order for Terraform to pick up your API token, start by exporting the
-special environment variable that will be loaded automatically for you:
+Set an environment variable, `TF_VAR_stripe_api_token` to store your Stripe API token. This helps ensure you 
+do not accidentally commit this sensitive token to your repository.
 
     export TF_VAR_stripe_api_token=<your token>
 
+Your token is now accessible in your Terraform configuration as `var.stripe_api_token`, and can be used to 
+configure the provider.
 
-Now that your token is available in HCL files as `var.stripe_api_token`, you
-can use it to configure the provider.  Here's an example that will:
+The example below demonstrates the following operations:
 
-  * Create a product
-  * Create a plan for that product
-  * Create a webhook endpoint for a few events
+  * create a product
+  * create a plan for that product
+  * create a webhook endpoint for a few events
 
 ```hcl
 provider "stripe" {
+  # NOTE: This is populated from the `TF_VAR_stripe_api_token` environment variable.
   api_token = "${var.stripe_api_token}"
 }
 
@@ -53,7 +57,7 @@ resource "stripe_product" "my_product" {
 resource "stripe_plan" "my_product_plan1" {
   product  = "${stripe_product.my_product.id}"
   amount   = 12345
-  interval = "month"                           # day week month year
+  interval = "month"    # Options: day week month year
   currency = "usd"
 }
 
