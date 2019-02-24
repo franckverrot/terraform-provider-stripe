@@ -28,5 +28,5 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
 
 output "webhook_secret" {
   sensitive = true
-  value = "${stripe_webhook_endpoint.my_endpoint.secret}"
+  value     = "${stripe_webhook_endpoint.my_endpoint.secret}"
 }
