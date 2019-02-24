@@ -17,7 +17,7 @@ func expandMetadata(d *schema.ResourceData) map[string]string {
 
 	// Set the old values to empty string so that they can be removed
 	expanded := expandStringMap(old.(map[string]interface{}))
-	for key, _ := range expanded {
+	for key := range expanded {
 		expanded[key] = ""
 	}
 
