@@ -77,6 +77,23 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
     "source.chargeable",
   ]
 }
+
+resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
+  code     = "MLK_DAY"
+  name     = "King Sales Event"
+  duration = "once"
+
+  amount_off = 4200
+  currency   = "usd" # lowercase
+
+  metadata = {
+    mlk   = "<3"
+    sales = "yes"
+  }
+
+  max_redemptions = 1024
+  redeem_by       = "2019-09-02T12:34:56-08:00" # RFC3339, in the future
+}
 ```
 
 ### Supported resources
@@ -111,6 +128,22 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
   - [x] connect
   - Computed:
     - secret
+- [x] [Coupons](https://stripe.com/docs/api/coupons)
+  - [x] code (aka `id`)
+  - [x] name
+  - [x] amount off
+    - [x] currency
+  - [x] percent off
+  - [x] duration
+    - [x] duration_in_months
+  - [x] max redemptions
+  - [x] metadata
+  - [x] redeem by (should be RC3339-compliant)
+  - Computed:
+    - [x] valid
+    - [x] created
+    - [x] livemode
+    - [x] times redeemed
 
 
 ## Developing the Provider

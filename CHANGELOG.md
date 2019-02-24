@@ -1,5 +1,10 @@
 # Changelog
 
+## Feb 24th 2019
+
+  * Add support for coupons!
+
+
 ## Feb 14th 2019
 
   * Add support for more attributes in plan, product and webhooks
