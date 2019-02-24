@@ -6,8 +6,9 @@ build:
 
 test: build
 	terraform init
-	terraform plan
-	terraform apply
+	terraform fmt
+	terraform plan -out terraform.tfplan
+	terraform apply terraform.tfplan
 
 .PHONY: authors
 authors:
