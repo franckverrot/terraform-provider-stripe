@@ -16,18 +16,25 @@ endpoints—via Terraform.
 
 ## Building The Provider
 
-Clone repository to: `$GOPATH/src/github.com/terraform-providers/terraform-provider-stripe`
+Clone repository to: `$GOPATH/src/github.com/franckverrot/terraform-provider-stripe`
 
 ```sh
-$ mkdir -p $GOPATH/src/github.com/terraform-providers; cd $GOPATH/src/github.com/terraform-providers
-$ git clone git@github.com:terraform-providers/terraform-provider-stripe
+$ mkdir -p $GOPATH/src/github.com/franckverrot; cd $GOPATH/src/github.com/franckverrot
+$ git clone git@github.com:franckverrot/terraform-provider-stripe
 ```
 
 Enter the provider directory and build the provider
 
 ```sh
-$ cd $GOPATH/src/github.com/terraform-providers/terraform-provider-stripe
+$ cd $GOPATH/src/github.com/franckverrot/terraform-provider-stripe
 $ make build
+```
+
+Or alternatively, to install it as a plugin, run
+
+```sh
+$ cd $GOPATH/src/github.com/franckverrot/terraform-provider-stripe
+$ make install
 ```
 
 ## Using the provider

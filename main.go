@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/franckverrot/terraform-provider-stripe/stripe"
 	"github.com/hashicorp/terraform/plugin"
-	"github.com/terraform-providers/terraform-provider-stripe/stripe"
 )
 
 func main() {
