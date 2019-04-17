@@ -1,7 +1,7 @@
 # Terraform Stripe Provider
 
-This provider enables Stripe merchants to manage certain parts of their Stripe infrastructure—products, plans, webhook 
-endpoints—via Terraform.
+This provider enables Stripe merchants to manage certain parts of their
+Stripe infrastructure—products, plans, webhook endpoints—via Terraform.
 
 **Example use cases**
 * Create and update resources in a repeatable manner
@@ -43,13 +43,14 @@ If you're building the provider, follow the instructions to [install it as a plu
 
 ### Basic Usage
 
-Set an environment variable, `TF_VAR_stripe_api_token` to store your Stripe API token. This helps ensure you 
-do not accidentally commit this sensitive token to your repository.
+Set an environment variable, `TF_VAR_stripe_api_token` to store your Stripe
+API token. This helps ensure you do not accidentally commit this sensitive
+token to your repository.
 
     export TF_VAR_stripe_api_token=<your token>
 
-Your token is now accessible in your Terraform configuration as `var.stripe_api_token`, and can be used to 
-configure the provider.
+Your token is now accessible in your Terraform configuration as
+`var.stripe_api_token`, and can be used to configure the provider.
 
 The example below demonstrates the following operations:
 
@@ -151,6 +152,54 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
     - [x] created
     - [x] livemode
     - [x] times redeemed
+
+
+### Importing existing resources
+
+Scenario: you create something manually and would like to start managing it
+with Terraform instead.
+
+This provider support a straightforward/naive import procedure, here's how
+you could do it for a coupon.
+
+First, import the resource:
+
+```
+$ terraform import stripe_coupon.mlk_day_coupon_25pc_off MLK_DAY
+
+...
+Before importing this resource, please create its configuration in the root module. For example:
+
+resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
+  # (resource arguments)
+}
+```
+
+Then after adding these lines to your Terraform file, a plan should result in:
+
+```
+$ terraform plan
+
+...
+-/+ stripe_coupon.mlk_day_coupon_25pc_off (new resource required)
+      id:              "MLK_DAY" => <computed> (forces new resource)
+      amount_off:      "4200" => "4200"
+      code:            "" => "MLK_DAY"
+      created:         "" => <computed>
+      currency:        "usd" => "usd"
+      duration:        "once" => "once"
+      livemode:        "false" => <computed>
+      max_redemptions: "1024" => "1024"
+      metadata.%:      "2" => "2"
+      metadata.mlk:    "<3" => "<3"
+      metadata.sales:  "yes" => "yes"
+      name:            "King Sales Event" => "King Sales Event"
+      redeem_by:       "" => "2019-09-02T12:34:56-08:00" (forces new resource)
+      times_redeemed:  "0" => <computed>
+      valid:           "true" => <computed>
+```
+
+Some updates might require replacing existing resources with new ones.
 
 
 ## Developing the Provider
