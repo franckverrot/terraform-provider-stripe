@@ -1,5 +1,10 @@
 # Changelog
 
+## Apr 17th 2019
+
+  * Add example on how to import existing resources
+
+
 ## Feb 24th 2019
 
   * Add support for coupons!
