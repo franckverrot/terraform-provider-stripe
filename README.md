@@ -20,7 +20,7 @@ Clone repository to: `$GOPATH/src/github.com/franckverrot/terraform-provider-str
 
 ```sh
 $ mkdir -p $GOPATH/src/github.com/franckverrot; cd $GOPATH/src/github.com/franckverrot
-$ git clone git@github.com:franckverrot/terraform-provider-stripe
+$ git clone https://github.com/franckverrot/terraform-provider-stripe.git
 ```
 
 Enter the provider directory and build the provider
