@@ -1,7 +1,6 @@
 package stripe
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -28,14 +27,17 @@ func resourceStripePlan() *schema.Resource {
 			"amount": &schema.Schema{
 				Type:     schema.TypeInt,
 				Required: true,
+				ForceNew: true,
 			},
 			"currency": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"interval": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"product": &schema.Schema{
 				Type:     schema.TypeString,
@@ -179,10 +181,6 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	params := stripe.PlanParams{}
-
-	if d.HasChange("amount") {
-		return fmt.Errorf("plan prices cannot be modified")
-	}
 
 	if d.HasChange("active") {
 		params.Active = stripe.Bool(bool(d.Get("active").(bool)))
