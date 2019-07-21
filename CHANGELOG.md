@@ -1,5 +1,10 @@
 # Changelog
 
+## Jul 21st 2019
+
+  * A change to a plan's amount, currency or interval will force a new resource
+
+
 ## Apr 17th 2019
 
   * Add example on how to import existing resources
