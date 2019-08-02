@@ -1,5 +1,10 @@
 # Changelog
 
+## August 1st 2019
+
+  * Support for Terraform 0.12
+
+
 ## Jul 21st 2019
 
   * A change to a plan's amount, currency or interval will force a new resource
