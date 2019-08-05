@@ -19,6 +19,11 @@ func resourceStripePlan() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			"plan_id": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"active": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -140,6 +145,10 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 		Currency:  stripe.String(planCurrency),
 	}
 
+	if id, ok := d.GetOk("plan_id"); ok {
+		params.ID = stripe.String(id.(string))
+	}
+
 	if active, ok := d.GetOk("active"); ok {
 		params.Active = stripe.Bool(active.(bool))
 	}
@@ -202,6 +211,7 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		d.SetId("")
 	} else {
+		d.Set("plan_id", plan.ID)
 		d.Set("active", plan.Active)
 		d.Set("aggregate_usage", plan.AggregateUsage)
 		d.Set("amount", plan.Amount)
@@ -251,6 +261,10 @@ func expandPlanTiers(in []interface{}) []*stripe.PlanTierParams {
 func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
 	params := stripe.PlanParams{}
+
+	if d.HasChange("plan_id") {
+		params.ID = stripe.String(d.Get("plan_id").(string))
+	}
 
 	if d.HasChange("active") {
 		params.Active = stripe.Bool(bool(d.Get("active").(bool)))
