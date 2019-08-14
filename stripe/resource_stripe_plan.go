@@ -26,7 +26,7 @@ func resourceStripePlan() *schema.Resource {
 			},
 			"amount": &schema.Schema{
 				Type:     schema.TypeInt,
-				Required: true,
+				Optional: true,
 				ForceNew: true,
 			},
 			"currency": &schema.Schema{
@@ -71,7 +71,37 @@ func resourceStripePlan() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			// TODO: tiers
+			"tier": &schema.Schema{
+				Type: schema.TypeList,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"up_to": &schema.Schema{
+							Type:          schema.TypeInt,
+							Optional:      true,
+							ForceNew:      true,
+							ConflictsWith: []string{"tier.up_to_inf"},
+						},
+						"up_to_inf": &schema.Schema{
+							Type:          schema.TypeBool,
+							Optional:      true,
+							ForceNew:      true,
+							ConflictsWith: []string{"tier.up_to"},
+						},
+						"flat_amount": &schema.Schema{
+							Type:     schema.TypeInt,
+							Optional: true,
+							ForceNew: true,
+						},
+						"unit_amount": &schema.Schema{
+							Type:     schema.TypeInt,
+							Optional: true,
+							ForceNew: true,
+						},
+					},
+				},
+				Optional: true,
+				ForceNew: true,
+			},
 			"tiers_mode": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
@@ -120,6 +150,9 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 
 	if billingScheme, ok := d.GetOk("billing_scheme"); ok {
 		params.BillingScheme = stripe.String(billingScheme.(string))
+		if billingScheme == "tiered" {
+			params.Amount = nil
+		}
 	}
 
 	if intervalCount, ok := d.GetOk("interval_count"); ok {
@@ -134,6 +167,10 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 
 	if tiersMode, ok := d.GetOk("tiers_mode"); ok {
 		params.TiersMode = stripe.String(tiersMode.(string))
+	}
+
+	if tiers, ok := d.GetOk("tier"); ok {
+		params.Tiers = expandPlanTiers(tiers.([]interface{}))
 	}
 
 	if trialPeriodDays, ok := d.GetOk("trial_period_days"); ok {
@@ -176,11 +213,39 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("nickname", plan.Nickname)
 		d.Set("product", plan.Product)
 		d.Set("tiers_mode", plan.TiersMode)
+		d.Set("tier", flattenPlanTiers(plan.Tiers))
 		d.Set("trial_period_days", plan.TrialPeriodDays)
 		d.Set("usage_type", plan.UsageType)
 	}
 
 	return err
+}
+
+func flattenPlanTiers(in []*stripe.PlanTier) []map[string]interface{} {
+	out := make([]map[string]interface{}, len(in))
+	for i, tier := range in {
+		out[i] = map[string]interface{}{
+			"up_to":       tier.UpTo,
+			"up_to_inf":   tier.UpTo == 0,
+			"flat_amount": tier.FlatAmount,
+			"unit_amount": tier.UnitAmount,
+		}
+	}
+	return out
+}
+
+func expandPlanTiers(in []interface{}) []*stripe.PlanTierParams {
+	out := make([]*stripe.PlanTierParams, len(in))
+	for i, v := range in {
+		tier := v.(map[string]interface{})
+		out[i] = &stripe.PlanTierParams{
+			UpTo:       stripe.Int64(int64(tier["up_to"].(int))),
+			UpToInf:    stripe.Bool(tier["up_to_inf"].(bool)),
+			FlatAmount: stripe.Int64(int64(tier["flat_amount"].(int))),
+			UnitAmount: stripe.Int64(int64(tier["unit_amount"].(int))),
+		}
+	}
+	return out
 }
 
 func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
