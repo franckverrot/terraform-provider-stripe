@@ -46,15 +46,18 @@ func resourceStripePlan() *schema.Resource {
 			"aggregate_usage": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				ForceNew: true,
 			},
 			"billing_scheme": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				ForceNew: true,
 				Default:  "per_unit",
 			},
 			"interval_count": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
+				ForceNew: true,
 				Default:  1,
 			},
 			"metadata": &schema.Schema{
@@ -72,6 +75,7 @@ func resourceStripePlan() *schema.Resource {
 			"tiers_mode": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				ForceNew: true,
 			},
 			// TODO: transform_usage
 			"trial_period_days": &schema.Schema{
@@ -81,6 +85,7 @@ func resourceStripePlan() *schema.Resource {
 			"usage_type": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				ForceNew: true,
 				Default:  "licensed",
 			},
 		},
@@ -186,18 +191,6 @@ func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
 		params.Active = stripe.Bool(bool(d.Get("active").(bool)))
 	}
 
-	if d.HasChange("aggregate_usage") {
-		params.AggregateUsage = stripe.String(d.Get("aggregate_usage").(string))
-	}
-
-	if d.HasChange("billing_scheme") {
-		params.BillingScheme = stripe.String(d.Get("billing_scheme").(string))
-	}
-
-	if d.HasChange("interval_count") {
-		params.IntervalCount = stripe.Int64(int64(d.Get("interval_count").(int)))
-	}
-
 	if d.HasChange("metadata") {
 		params.Metadata = expandMetadata(d)
 	}
@@ -206,16 +199,8 @@ func resourceStripePlanUpdate(d *schema.ResourceData, m interface{}) error {
 		params.Nickname = stripe.String(d.Get("nickname").(string))
 	}
 
-	if d.HasChange("tiers_mode") {
-		params.TiersMode = stripe.String(d.Get("tiers_mode").(string))
-	}
-
 	if d.HasChange("trial_period_days") {
 		params.TrialPeriodDays = stripe.Int64(int64(d.Get("trial_period_days").(int)))
-	}
-
-	if d.HasChange("usage_type") {
-		params.UsageType = stripe.String(d.Get("usage_type").(string))
 	}
 
 	_, err := client.Plans.Update(d.Id(), &params)
