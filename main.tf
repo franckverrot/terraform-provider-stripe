@@ -12,7 +12,7 @@ resource "stripe_product" "my_product" {
 resource "stripe_plan" "my_product_plan" {
   product  = "${stripe_product.my_product.id}"
   amount   = 12345
-  interval = "month"                           # day week month year
+  interval = "month" # day week month year
   currency = "usd"
 }
 
