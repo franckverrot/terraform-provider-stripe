@@ -124,7 +124,7 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   - [x] metadata (map)
   - [x] nickname
   - [x] product
-  - [ ] tiers
+  - [x] tiers
   - [x] tiers mode
   - [ ] transform_usage
   - [x] trial period days
