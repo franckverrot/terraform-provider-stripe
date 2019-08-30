@@ -16,6 +16,32 @@ resource "stripe_plan" "my_product_plan" {
   currency = "usd"
 }
 
+resource "stripe_plan" "my_product_metered_plan" {
+  product  = "${stripe_product.my_product.id}"
+  interval = "month"
+  currency = "usd"
+
+  usage_type      = "metered"
+  billing_scheme  = "tiered"
+  tiers_mode      = "graduated"
+  aggregate_usage = "max"
+
+  tier {
+    up_to       = 5
+    unit_amount = 50
+  }
+
+  tier {
+    up_to       = 15
+    unit_amount = 35
+  }
+
+  tier {
+    up_to_inf   = true
+    unit_amount = 25
+  }
+}
+
 resource "stripe_webhook_endpoint" "my_endpoint" {
   url = "https://mydomain.example.com/webhook"
 
