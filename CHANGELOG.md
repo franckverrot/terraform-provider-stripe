@@ -1,5 +1,11 @@
 # Changelog
 
+## August 30th 2019
+
+  * Support for `plan_id` in plan resources
+  * Add tiers to plan resources
+
+
 ## August 1st 2019
 
   * Support for Terraform 0.12
