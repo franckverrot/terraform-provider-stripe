@@ -83,7 +83,7 @@ func resourceStripeWebhookEndpointUpdate(d *schema.ResourceData, m interface{}) 
 	client := m.(*client.API)
 	params := stripe.WebhookEndpointParams{}
 
-	if d.HasChange("name") {
+	if d.HasChange("url") {
 		params.URL = stripe.String(d.Get("url").(string))
 	}
 
