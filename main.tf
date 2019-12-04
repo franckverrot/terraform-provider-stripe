@@ -9,6 +9,12 @@ resource "stripe_product" "my_product" {
   type = "service"
 }
 
+resource "stripe_product" "my_product_with_id" {
+  product_id = "my_product"
+  name       = "My Product"
+  type       = "service"
+}
+
 resource "stripe_plan" "my_product_plan" {
   product  = "${stripe_product.my_product.id}"
   amount   = 12345
@@ -80,5 +86,5 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   }
 
   max_redemptions = 1024
-  redeem_by       = "2019-09-02T12:34:56-08:00" # RFC3339
+  redeem_by       = "2024-09-02T12:34:56-08:00" # RFC3339
 }
