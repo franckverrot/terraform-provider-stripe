@@ -86,5 +86,5 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   }
 
   max_redemptions = 1024
-  redeem_by       = "2019-09-02T12:34:56-08:00" # RFC3339
+  redeem_by       = "2024-09-02T12:34:56-08:00" # RFC3339
 }
