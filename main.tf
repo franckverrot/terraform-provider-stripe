@@ -9,6 +9,12 @@ resource "stripe_product" "my_product" {
   type = "service"
 }
 
+resource "stripe_product" "my_product_with_id" {
+  product_id = "my_product"
+  name       = "My Product"
+  type       = "service"
+}
+
 resource "stripe_plan" "my_product_plan" {
   product  = "${stripe_product.my_product.id}"
   amount   = 12345
