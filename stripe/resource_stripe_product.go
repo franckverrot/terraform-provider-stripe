@@ -24,6 +24,12 @@ func resourceStripeProduct() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			"product_id": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+				ForceNew: true,
+			},
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
@@ -84,6 +90,10 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 		Type: stripe.String(string(stripeProductType)),
 	}
 
+	if productID, ok := d.GetOk("product_id"); ok {
+		params.ID = stripe.String(productID.(string))
+	}
+
 	if active, ok := d.GetOk("active"); ok {
 		params.Active = stripe.Bool(active.(bool))
 	}
@@ -120,6 +130,7 @@ func resourceStripeProductRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	d.Set("product_id", product.ID)
 	d.Set("name", product.Name)
 	d.Set("type", product.Type)
 	d.Set("active", product.Active)
