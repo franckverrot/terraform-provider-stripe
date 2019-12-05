@@ -221,7 +221,7 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("interval_count", plan.IntervalCount)
 		d.Set("metadata", plan.Metadata)
 		d.Set("nickname", plan.Nickname)
-		d.Set("product", plan.Product)
+		d.Set("product", plan.Product.ID)
 		d.Set("tiers_mode", plan.TiersMode)
 		d.Set("tier", flattenPlanTiers(plan.Tiers))
 		d.Set("trial_period_days", plan.TrialPeriodDays)
