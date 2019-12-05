@@ -1,6 +1,9 @@
 package stripe
 
 import (
+	"net/http"
+
+	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	stripe "github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/client"
@@ -65,18 +68,23 @@ func resourceStripeWebhookEndpointCreate(d *schema.ResourceData, m interface{}) 
 }
 
 func resourceStripeWebhookEndpointRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*client.API)
-	webhookEndpoint, err := client.WebhookEndpoints.Get(d.Id(), nil)
+	return resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		client := m.(*client.API)
+		webhookEndpoint, err := client.WebhookEndpoints.Get(d.Id(), nil)
+		if err != nil {
+			if sErr, ok := err.(*stripe.Error); ok && sErr.HTTPStatusCode == http.StatusTooManyRequests {
+				return resource.RetryableError(sErr)
+			}
+			d.SetId("")
+			return resource.NonRetryableError(err)
+		}
 
-	if err != nil {
-		return err
-	}
+		d.Set("url", webhookEndpoint.URL)
+		d.Set("enabled_events", webhookEndpoint.EnabledEvents)
+		d.Set("connect", webhookEndpoint.Connect)
 
-	d.Set("url", webhookEndpoint.URL)
-	d.Set("enabled_events", webhookEndpoint.EnabledEvents)
-	d.Set("connect", webhookEndpoint.Connect)
-
-	return nil
+		return nil
+	})
 }
 
 func resourceStripeWebhookEndpointUpdate(d *schema.ResourceData, m interface{}) error {
