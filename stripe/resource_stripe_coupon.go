@@ -189,7 +189,11 @@ func resourceStripeCouponRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("metadata", coupon.Metadata)
 		d.Set("name", coupon.Name)
 		d.Set("percent_off", coupon.PercentOff)
-		d.Set("redeem_by", time.Unix(coupon.RedeemBy, 0).UTC().Format(time.RFC3339))
+
+		if coupon.RedeemBy > 0 {
+			d.Set("redeem_by", time.Unix(coupon.RedeemBy, 0).UTC().Format(time.RFC3339))
+		}
+
 		d.Set("times_redeemed", coupon.TimesRedeemed)
 		d.Set("valid", coupon.Valid)
 		d.Set("created", coupon.Valid)
