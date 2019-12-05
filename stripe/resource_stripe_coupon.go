@@ -179,6 +179,7 @@ func resourceStripeCouponRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		d.SetId("")
 	} else {
+		d.Set("code", d.Id())
 		d.Set("amount_off", coupon.AmountOff)
 		d.Set("currency", coupon.Currency)
 		d.Set("duration", coupon.Duration)
