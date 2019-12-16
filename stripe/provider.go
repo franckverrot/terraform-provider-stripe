@@ -22,6 +22,7 @@ func Provider() terraform.ResourceProvider {
 			"stripe_coupon":           resourceStripeCoupon(),
 			"stripe_plan":             resourceStripePlan(),
 			"stripe_product":          resourceStripeProduct(),
+			"stripe_tax_rate":         resourceStripeTaxRate(),
 			"stripe_webhook_endpoint": resourceStripeWebhookEndpoint(),
 		},
 
