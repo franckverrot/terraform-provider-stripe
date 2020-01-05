@@ -43,7 +43,7 @@ resource "stripe_plan" "my_product_metered_plan" {
 }
 
 resource "stripe_plan" "my_product_plan_with_id" {
-  plan_id  = "my_plan"
+  plan_id = "my_plan"
 
   product  = "${stripe_product.my_product.id}"
   amount   = 3232
