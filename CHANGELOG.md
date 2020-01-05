@@ -1,5 +1,15 @@
 # Changelog
 
+
+## January 5th 2020
+
+  * Set coupon ID as its code
+  * Update `redeem_by` as it was set in the past
+  * Add `product_id` to `stripe_product`
+  * Fix the update webhook url
+  * Update dependencies
+
+
 ## August 30th 2019
 
   * Support for `plan_id` in plan resources
