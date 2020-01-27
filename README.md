@@ -151,6 +151,17 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
     - [x] created
     - [x] livemode
     - [x] times redeemed
+- [x] [TaxRates](https://stripe.com/docs/api/tax_rates)
+  - [x] code (aka `id`)
+  - [x] active
+  - [x] description
+  - [x] display_name
+  - [x] inclusive
+  - [x] jurisdiction
+  - [ ] DELETE API (Stripe API doesn't provide the API at the moment, so the deletion should be done via dashboard page)
+  - Computed:
+    - [x] created
+    - [x] livemode
 
 
 ### Importing existing resources
