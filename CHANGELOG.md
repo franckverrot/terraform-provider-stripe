@@ -1,5 +1,9 @@
 # Changelog
 
+## February 1st 2010
+
+  * Add tax rate
+
 
 ## January 5th 2020
 

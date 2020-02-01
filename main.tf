@@ -88,3 +88,10 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   max_redemptions = 1024
   redeem_by       = "2024-09-02T12:34:56-08:00" # RFC3339
 }
+
+resource "stripe_tax_rate" "my_tax_rate" {
+  active       = true
+  percentage   = 21
+  display_name = "Twenty-one percent tax rate"
+  inclusive    = true
+}
