@@ -1,18 +1,18 @@
-default: build
+default: compile
 
-.PHONY=build
-build:
+.PHONY=compile
+compile:
 	go get ./...
 	go build -o terraform-provider-stripe
 
-test: build
+test: compile
 	terraform init
 	terraform fmt
 	terraform plan -out terraform.tfplan
 	terraform apply terraform.tfplan
 
 .PHONY=install
-install: build
+install: compile
 	mkdir -p ~/.terraform.d/plugins
 	cp ./terraform-provider-stripe ~/.terraform.d/plugins/
 
