@@ -31,6 +31,7 @@ func resourceStripeWebhookEndpoint() *schema.Resource {
 			"connect": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
+				ForceNew: true,
 			},
 			"secret": &schema.Schema{
 				Type:     schema.TypeString,
