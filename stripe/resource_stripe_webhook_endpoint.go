@@ -74,7 +74,7 @@ func resourceStripeWebhookEndpointRead(d *schema.ResourceData, m interface{}) er
 
 	d.Set("url", webhookEndpoint.URL)
 	d.Set("enabled_events", webhookEndpoint.EnabledEvents)
-	d.Set("connect", webhookEndpoint.Connect)
+	d.Set("connect", webhookEndpoint.Application != "")
 
 	return nil
 }
