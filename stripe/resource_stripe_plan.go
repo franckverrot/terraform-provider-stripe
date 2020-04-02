@@ -33,6 +33,13 @@ func resourceStripePlan() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 				ForceNew: true,
+				Computed: true,
+			},
+			"amount_decimal": &schema.Schema{
+				Type:     schema.TypeFloat,
+				Optional: true,
+				ForceNew: true,
+				Computed: true,
 			},
 			"currency": &schema.Schema{
 				Type:     schema.TypeString,
@@ -96,11 +103,25 @@ func resourceStripePlan() *schema.Resource {
 							Type:     schema.TypeInt,
 							Optional: true,
 							ForceNew: true,
+							Computed: true,
+						},
+						"flat_amount_decimal": &schema.Schema{
+							Type:     schema.TypeFloat,
+							Optional: true,
+							ForceNew: true,
+							Computed: true,
 						},
 						"unit_amount": &schema.Schema{
 							Type:     schema.TypeInt,
 							Optional: true,
 							ForceNew: true,
+							Computed: true,
+						},
+						"unit_amount_decimal": &schema.Schema{
+							Type:     schema.TypeFloat,
+							Optional: true,
+							ForceNew: true,
+							Computed: true,
 						},
 					},
 				},
@@ -129,7 +150,6 @@ func resourceStripePlan() *schema.Resource {
 
 func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
-	planAmount := int64(d.Get("amount").(int))
 	planNickname := d.Get("nickname").(string)
 	planInterval := d.Get("interval").(string)
 	planCurrency := d.Get("currency").(string)
@@ -139,10 +159,15 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 	// TODO: check currency
 
 	params := &stripe.PlanParams{
-		Amount:    stripe.Int64(planAmount),
-		Interval:  stripe.String(planInterval),
-		ProductID: stripe.String(planProductID),
-		Currency:  stripe.String(planCurrency),
+		Interval:	stripe.String(planInterval),
+		ProductID:	stripe.String(planProductID),
+		Currency:	stripe.String(planCurrency),
+	}
+
+	if amount, ok := d.GetOk("amount"); ok {
+		params.Amount = stripe.Int64(int64(amount.(int)))
+	} else if amountDecimal, ok := d.GetOk("amount_decimal"); ok {
+		params.AmountDecimal = stripe.Float64(amountDecimal.(float64))
 	}
 
 	if id, ok := d.GetOk("plan_id"); ok {
@@ -215,6 +240,7 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("active", plan.Active)
 		d.Set("aggregate_usage", plan.AggregateUsage)
 		d.Set("amount", plan.Amount)
+		d.Set("amount_decimal", plan.AmountDecimal)
 		d.Set("billing_scheme", plan.BillingScheme)
 		d.Set("currency", plan.Currency)
 		d.Set("interval", plan.Interval)
@@ -235,10 +261,12 @@ func flattenPlanTiers(in []*stripe.PlanTier) []map[string]interface{} {
 	out := make([]map[string]interface{}, len(in))
 	for i, tier := range in {
 		out[i] = map[string]interface{}{
-			"up_to":       tier.UpTo,
-			"up_to_inf":   tier.UpTo == 0,
-			"flat_amount": tier.FlatAmount,
-			"unit_amount": tier.UnitAmount,
+			"up_to":		tier.UpTo,
+			"up_to_inf":		tier.UpTo == 0,
+			"flat_amount":		tier.FlatAmount,
+			"flat_amount_decimal":	tier.FlatAmountDecimal,
+			"unit_amount":		tier.UnitAmount,
+			"unit_amount_decimal":	tier.UnitAmountDecimal,
 		}
 	}
 	return out
@@ -249,10 +277,18 @@ func expandPlanTiers(in []interface{}) []*stripe.PlanTierParams {
 	for i, v := range in {
 		tier := v.(map[string]interface{})
 		out[i] = &stripe.PlanTierParams{
-			UpTo:       stripe.Int64(int64(tier["up_to"].(int))),
-			UpToInf:    stripe.Bool(tier["up_to_inf"].(bool)),
-			FlatAmount: stripe.Int64(int64(tier["flat_amount"].(int))),
-			UnitAmount: stripe.Int64(int64(tier["unit_amount"].(int))),
+			UpTo:		stripe.Int64(int64(tier["up_to"].(int))),
+			UpToInf:	stripe.Bool(tier["up_to_inf"].(bool)),
+		}
+		if tier["flat_amount"] != nil {
+			out[i].FlatAmount = stripe.Int64(int64(tier["flat_amount"].(int)))
+		} else if tier["flat_amount_decimal"] != nil {
+			out[i].FlatAmountDecimal = stripe.Float64(tier["flat_amount_decimal"].(float64))
+		}
+		if tier["unit_amount"] != nil {
+			out[i].UnitAmount = stripe.Int64(int64(tier["unit_amount"].(int)))
+		} else if tier["unit_amount_decimal"] != nil {
+			out[i].UnitAmountDecimal = stripe.Float64(tier["unit_amount_decimal"].(float64))
 		}
 	}
 	return out

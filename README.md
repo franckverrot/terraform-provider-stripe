@@ -117,6 +117,7 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   - [x] active (Default: true)
   - [x] aggregate usage
   - [x] amount
+  - [x] amount_decimal
   - [x] billing scheme (Default: per_unit)
   - [x] currency
   - [x] interval
