@@ -133,7 +133,26 @@ func resourceStripePlan() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
-			// TODO: transform_usage
+			"transform_usage": &schema.Schema{
+				Type: schema.TypeList,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"divide_by": &schema.Schema{
+							Type:     schema.TypeInt,
+							Required: true,
+							ForceNew: true,
+						},
+						"round": &schema.Schema{
+							Type:     schema.TypeString,
+							Required: true,
+							ForceNew: true,
+						},
+					},
+				},
+				MaxItems: 1,
+				Optional: true,
+				ForceNew: true,
+			},
 			"trial_period_days": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -207,6 +226,10 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 		params.Tiers = expandPlanTiers(tiers.([]interface{}))
 	}
 
+	if transformUsage, ok := d.GetOk("transform_usage"); ok {
+		params.TransformUsage = expandPlanTransformUsage(transformUsage.([]interface{}))
+	}
+
 	if trialPeriodDays, ok := d.GetOk("trial_period_days"); ok {
 		params.TrialPeriodDays = stripe.Int64(int64(trialPeriodDays.(int)))
 	}
@@ -250,6 +273,7 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("product", plan.Product)
 		d.Set("tiers_mode", plan.TiersMode)
 		d.Set("tier", flattenPlanTiers(plan.Tiers))
+		d.Set("transform_usage", flattenPlanTransformUsage(plan.TransformUsage))
 		d.Set("trial_period_days", plan.TrialPeriodDays)
 		d.Set("usage_type", plan.UsageType)
 	}
@@ -290,6 +314,35 @@ func expandPlanTiers(in []interface{}) []*stripe.PlanTierParams {
 		} else if tier["unit_amount_decimal"] != nil {
 			out[i].UnitAmountDecimal = stripe.Float64(tier["unit_amount_decimal"].(float64))
 		}
+	}
+	return out
+}
+
+func flattenPlanTransformUsage(in *stripe.PlanTransformUsage) []map[string]interface{} {
+	n := 1
+	if in == nil {
+		n = 0
+	}
+	out := make([]map[string]interface{}, n)
+
+	for i, _ := range out {
+		out[i] = map[string]interface{}{
+			"divide_by":	in.DivideBy,
+			"round":	in.Round,
+		}
+	}
+	return out
+}
+
+func expandPlanTransformUsage(in []interface{}) *stripe.PlanTransformUsageParams {
+	if len(in) == 0 {
+		return nil
+	}
+
+	transformUsage := in[0].(map[string]interface{})
+	out := &stripe.PlanTransformUsageParams{
+		DivideBy:	stripe.Int64(int64(transformUsage["divide_by"].(int))),
+		Round:		stripe.String(transformUsage["round"].(string)),
 	}
 	return out
 }

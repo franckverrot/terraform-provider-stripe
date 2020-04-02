@@ -64,6 +64,17 @@ resource "stripe_plan" "my_decimal_product_plan" {
   currency       = "usd"
 }
 
+resource "stripe_plan" "my_transformed_product_plan" {
+  product  = "${stripe_product.my_product.id}"
+  amount   = 2401
+  interval = "month" # day week month year
+  currency = "usd"
+  transform_usage {
+    divide_by = 7
+    round     = "down"
+  }
+}
+
 resource "stripe_webhook_endpoint" "my_endpoint" {
   url = "https://mydomain.example.com/webhook"
 
