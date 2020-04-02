@@ -21,13 +21,33 @@ const (
 	SubscriptionStatusUnpaid            SubscriptionStatus = "unpaid"
 )
 
-// SubscriptionBilling is the type of billing method for this subscription's invoices.
+// SubscriptionBilling is the type of collection method for this subscription's invoices.
+// This is considered deprecated. Use SubscriptionCollectionMethod instead.
 type SubscriptionBilling string
 
 // List of values that SubscriptionBilling can take.
 const (
 	SubscriptionBillingChargeAutomatically SubscriptionBilling = "charge_automatically"
 	SubscriptionBillingSendInvoice         SubscriptionBilling = "send_invoice"
+)
+
+// SubscriptionCollectionMethod is the type of collection method for this subscription's invoices.
+type SubscriptionCollectionMethod string
+
+// List of values that SubscriptionCollectionMethod can take.
+const (
+	SubscriptionCollectionMethodChargeAutomatically SubscriptionCollectionMethod = "charge_automatically"
+	SubscriptionCollectionMethodSendInvoice         SubscriptionCollectionMethod = "send_invoice"
+)
+
+// SubscriptionPaymentBehavior lets you control the behavior of subscription creation in case of
+// a failed payment.
+type SubscriptionPaymentBehavior string
+
+// List of values that SubscriptionPaymentBehavior can take.
+const (
+	SubscriptionPaymentBehaviorAllowIncomplete   SubscriptionPaymentBehavior = "allow_incomplete"
+	SubscriptionPaymentBehaviorErrorIfIncomplete SubscriptionPaymentBehavior = "error_if_incomplete"
 )
 
 // SubscriptionTransferDataParams is the set of parameters allowed for the transfer_data hash.
@@ -41,7 +61,6 @@ type SubscriptionParams struct {
 	Params                      `form:"*"`
 	ApplicationFeePercent       *float64                             `form:"application_fee_percent"`
 	BackdateStartDate           *int64                               `form:"backdate_start_date"`
-	Billing                     *string                              `form:"billing"`
 	BillingCycleAnchor          *int64                               `form:"billing_cycle_anchor"`
 	BillingCycleAnchorNow       *bool                                `form:"-"` // See custom AppendTo
 	BillingCycleAnchorUnchanged *bool                                `form:"-"` // See custom AppendTo
@@ -49,6 +68,7 @@ type SubscriptionParams struct {
 	CancelAt                    *int64                               `form:"cancel_at"`
 	CancelAtPeriodEnd           *bool                                `form:"cancel_at_period_end"`
 	Card                        *CardParams                          `form:"card"`
+	CollectionMethod            *string                              `form:"collection_method"`
 	Coupon                      *string                              `form:"coupon"`
 	Customer                    *string                              `form:"customer"`
 	DaysUntilDue                *int64                               `form:"days_until_due"`
@@ -56,7 +76,9 @@ type SubscriptionParams struct {
 	DefaultSource               *string                              `form:"default_source"`
 	DefaultTaxRates             []*string                            `form:"default_tax_rates"`
 	Items                       []*SubscriptionItemsParams           `form:"items"`
+	OffSession                  *bool                                `form:"off_session"`
 	OnBehalfOf                  *string                              `form:"on_behalf_of"`
+	PaymentBehavior             *string                              `form:"payment_behavior"`
 	Plan                        *string                              `form:"plan"`
 	Prorate                     *bool                                `form:"prorate"`
 	ProrationDate               *int64                               `form:"proration_date"`
@@ -66,6 +88,9 @@ type SubscriptionParams struct {
 	TrialEndNow                 *bool                                `form:"-"` // See custom AppendTo
 	TrialFromPlan               *bool                                `form:"trial_from_plan"`
 	TrialPeriodDays             *int64                               `form:"trial_period_days"`
+
+	// This parameter is deprecated and we recommend that you use CollectionMethod instead.
+	Billing *string `form:"billing"`
 
 	// This parameter is deprecated and we recommend that you use TaxRates instead.
 	TaxPercent *float64 `form:"tax_percent"`
@@ -120,7 +145,7 @@ type SubscriptionItemsParams struct {
 // For more details see https://stripe.com/docs/api#list_subscriptions.
 type SubscriptionListParams struct {
 	ListParams              `form:"*"`
-	Billing                 string            `form:"billing"`
+	CollectionMethod        *string           `form:"collection_method"`
 	Created                 int64             `form:"created"`
 	CreatedRange            *RangeQueryParams `form:"created"`
 	CurrentPeriodEnd        *int64            `form:"current_period_end"`
@@ -130,6 +155,9 @@ type SubscriptionListParams struct {
 	Customer                string            `form:"customer"`
 	Plan                    string            `form:"plan"`
 	Status                  string            `form:"status"`
+
+	// This parameter is deprecated and we recommend that you use CollectionMethod instead.
+	Billing *string `form:"billing"`
 }
 
 // SubscriptionTransferData represents the information for the transfer_data associated with a subscription.
@@ -141,12 +169,12 @@ type SubscriptionTransferData struct {
 // For more details see https://stripe.com/docs/api#subscriptions.
 type Subscription struct {
 	ApplicationFeePercent float64                        `json:"application_fee_percent"`
-	Billing               SubscriptionBilling            `json:"billing"`
 	BillingCycleAnchor    int64                          `json:"billing_cycle_anchor"`
 	BillingThresholds     *SubscriptionBillingThresholds `json:"billing_thresholds"`
 	CancelAt              int64                          `json:"cancel_at"`
 	CancelAtPeriodEnd     bool                           `json:"cancel_at_period_end"`
 	CanceledAt            int64                          `json:"canceled_at"`
+	CollectionMethod      SubscriptionCollectionMethod   `json:"collection_method"`
 	Created               int64                          `json:"created"`
 	CurrentPeriodEnd      int64                          `json:"current_period_end"`
 	CurrentPeriodStart    int64                          `json:"current_period_start"`
@@ -164,13 +192,21 @@ type Subscription struct {
 	Metadata              map[string]string              `json:"metadata"`
 	Object                string                         `json:"object"`
 	OnBehalfOf            *Account                       `json:"on_behalf_of"`
+	PendingSetupIntent    *SetupIntent                   `json:"pending_setup_intent"`
 	Plan                  *Plan                          `json:"plan"`
 	Quantity              int64                          `json:"quantity"`
-	Start                 int64                          `json:"start"`
+	Schedule              *SubscriptionSchedule          `json:"schedule"`
+	StartDate             int64                          `json:"start_date"`
 	Status                SubscriptionStatus             `json:"status"`
 	TransferData          *SubscriptionTransferData      `json:"transfer_data"`
 	TrialEnd              int64                          `json:"trial_end"`
 	TrialStart            int64                          `json:"trial_start"`
+
+	// This field is deprecated and we recommend that you use CollectionMethod instead.
+	Billing SubscriptionBilling `json:"billing"`
+
+	// This field is deprecated and we recommend that you use StartDate instead.
+	Start int64 `json:"start"`
 
 	// This field is deprecated and we recommend that you use TaxRates instead.
 	TaxPercent float64 `json:"tax_percent"`

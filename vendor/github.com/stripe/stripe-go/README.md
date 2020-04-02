@@ -25,7 +25,7 @@ import (
 
 ### Go Module Support
 
-The library currently *does not* ship with first-class support for Stripe
+The library currently *does not* ship with first-class support for Go
 modules. We put in support for it before, but ran into compatibility problems
 for existing installations using Dep (see discussion in [closer to the bottom
 of this thread][gomodvsdep], and [reverted support][gomodrevert]. Our current
@@ -40,7 +40,7 @@ suffix* in the path like so:
 module github.com/my/package
 
 require (
-    github.com/stripe/stripe-go v60.12.2
+    github.com/stripe/stripe-go v62.4.0
 )
 ```
 
@@ -68,8 +68,8 @@ Below are a few simple examples:
 ```go
 params := &stripe.CustomerParams{
 	AccountBalance:     stripe.Int64(-123),
-	Description: stripe.String("Stripe Developer"),
-	Email:       stripe.String("gostripe@stripe.com"),
+	Description:        stripe.String("Stripe Developer"),
+	Email:              stripe.String("gostripe@stripe.com"),
 }
 params.SetSource("tok_1234")
 
@@ -272,8 +272,8 @@ if err := i.Err(); err != nil {
 
 ### Configuring Automatic Retries
 
-The library can be configured to automatically retry requests that fail due to
-an intermittent network problem or other knowingly non-deterministic errors:
+You can enable automatic retries on requests that fail due to a transient
+problem by configuring the maximum number of retries:
 
 ```go
 import (
@@ -293,6 +293,9 @@ sc.Init("sk_key", &stripe.Backends{
 
 coupon, err := sc.Coupons.New(...)
 ```
+
+Various errors can trigger a retry, like a connection error or a timeout, and
+also certain API responses like HTTP status `409 Conflict`.
 
 [Idempotency keys][idempotency-keys] are added to requests to guarantee that
 retries are safe.
@@ -329,10 +332,10 @@ type LeveledLoggerInterface interface {
 }
 ```
 
-Some loggers like [Logrus][logrus] support this interface out-of-the-box so
-it's possible to set `DefaultLeveledLogger` to a `*logrus.Logger` directly. For
-others (Zap for example) it'll be necessary to write a thin shim layer to
-support them.
+Some loggers like [Logrus][logrus] and Zap's [SugaredLogger][sugaredlogger]
+support this interface out-of-the-box so it's possible to set
+`DefaultLeveledLogger` to a `*logrus.Logger` or `*zap.SugaredLogger` directly.
+For others it may be necessary to write a thin shim layer to support them.
 
 ### Writing a Plugin
 
@@ -350,6 +353,19 @@ stripe.SetAppInfo(&stripe.AppInfo{
 This information is passed along when the library makes calls to the Stripe
 API. Note that while `Name` is always required, `URL` and `Version` are
 optional.
+
+### Request latency telemetry
+
+By default, the library sends request latency telemetry to Stripe. These
+numbers help Stripe improve the overall latency of its API for all users.
+
+You can disable this behavior if you prefer:
+
+```go
+config := &stripe.BackendConfig{
+	EnableTelemetry: false,
+}
+```
 
 ## Development
 

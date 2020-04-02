@@ -4,6 +4,18 @@ import (
 	"encoding/json"
 )
 
+// CheckoutSessionSubmitType is the list of allowed values for the `submit_type`
+// of a Session.
+type CheckoutSessionSubmitType string
+
+// List of values that CheckoutSessionSubmitType can take.
+const (
+	CheckoutSessionSubmitTypeAuto   CheckoutSessionSubmitType = "auto"
+	CheckoutSessionSubmitTypeBook   CheckoutSessionSubmitType = "book"
+	CheckoutSessionSubmitTypeDonate CheckoutSessionSubmitType = "donate"
+	CheckoutSessionSubmitTypePay    CheckoutSessionSubmitType = "pay"
+)
+
 // CheckoutSessionDisplayItemType is the list of allowed values for the display item type.
 type CheckoutSessionDisplayItemType string
 
@@ -12,6 +24,16 @@ const (
 	CheckoutSessionDisplayItemTypeCustom CheckoutSessionDisplayItemType = "custom"
 	CheckoutSessionDisplayItemTypePlan   CheckoutSessionDisplayItemType = "plan"
 	CheckoutSessionDisplayItemTypeSKU    CheckoutSessionDisplayItemType = "sku"
+)
+
+// CheckoutSessionMode is the list of allowed values for the mode on a Session.
+type CheckoutSessionMode string
+
+// List of values that CheckoutSessionMode can take.
+const (
+	CheckoutSessionModePayment      CheckoutSessionMode = "payment"
+	CheckoutSessionModeSetup        CheckoutSessionMode = "setup"
+	CheckoutSessionModeSubscription CheckoutSessionMode = "subscription"
 )
 
 // CheckoutSessionLineItemParams is the set of parameters allowed for a line item
@@ -40,9 +62,18 @@ type CheckoutSessionPaymentIntentDataParams struct {
 	Description          *string                                             `form:"description"`
 	OnBehalfOf           *string                                             `form:"on_behalf_of"`
 	ReceiptEmail         *string                                             `form:"receipt_email"`
+	SetupFutureUsage     *string                                             `form:"setup_future_usage"`
 	Shipping             *ShippingDetailsParams                              `form:"shipping"`
 	StatementDescriptor  *string                                             `form:"statement_descriptor"`
 	TransferData         *CheckoutSessionPaymentIntentDataTransferDataParams `form:"transfer_data"`
+}
+
+// CheckoutSessionSetupIntentDataParams is the set of parameters allowed for the setup intent
+// creation on a checkout session.
+type CheckoutSessionSetupIntentDataParams struct {
+	Params      `form:"*"`
+	Description *string `form:"description"`
+	OnBehalfOf  *string `form:"on_behalf_of"`
 }
 
 // CheckoutSessionSubscriptionDataItemsParams is the set of parameters allowed for one item on a
@@ -55,10 +86,11 @@ type CheckoutSessionSubscriptionDataItemsParams struct {
 // CheckoutSessionSubscriptionDataParams is the set of parameters allowed for the subscription
 // creation on a checkout session.
 type CheckoutSessionSubscriptionDataParams struct {
-	Params          `form:"*"`
-	Items           []*CheckoutSessionSubscriptionDataItemsParams `form:"items"`
-	TrialEnd        *int64                                        `form:"trial_end"`
-	TrialPeriodDays *int64                                        `form:"trial_period_days"`
+	Params                `form:"*"`
+	ApplicationFeePercent *float64                                      `form:"application_fee_percent"`
+	Items                 []*CheckoutSessionSubscriptionDataItemsParams `form:"items"`
+	TrialEnd              *int64                                        `form:"trial_end"`
+	TrialPeriodDays       *int64                                        `form:"trial_period_days"`
 }
 
 // CheckoutSessionParams is the set of parameters that can be used when creating
@@ -73,9 +105,12 @@ type CheckoutSessionParams struct {
 	CustomerEmail            *string                                 `form:"customer_email"`
 	LineItems                []*CheckoutSessionLineItemParams        `form:"line_items"`
 	Locale                   *string                                 `form:"locale"`
+	Mode                     *string                                 `form:"mode"`
 	PaymentIntentData        *CheckoutSessionPaymentIntentDataParams `form:"payment_intent_data"`
 	PaymentMethodTypes       []*string                               `form:"payment_method_types"`
+	SetupIntentData          *CheckoutSessionSetupIntentDataParams   `form:"setup_intent_data"`
 	SubscriptionData         *CheckoutSessionSubscriptionDataParams  `form:"subscription_data"`
+	SubmitType               *string                                 `form:"submit_type"`
 	SuccessURL               *string                                 `form:"success_url"`
 }
 
@@ -109,10 +144,13 @@ type CheckoutSession struct {
 	ID                 string                        `json:"id"`
 	Livemode           bool                          `json:"livemode"`
 	Locale             string                        `json:"locale"`
+	Mode               CheckoutSessionMode           `json:"mode"`
 	Object             string                        `json:"object"`
 	PaymentIntent      *PaymentIntent                `json:"payment_intent"`
 	PaymentMethodTypes []string                      `json:"payment_method_types"`
+	SetupIntent        *SetupIntent                  `json:"setup_intent"`
 	Subscription       *Subscription                 `json:"subscription"`
+	SubmitType         CheckoutSessionSubmitType     `json:"submit_type"`
 	SuccessURL         string                        `json:"success_url"`
 }
 

@@ -1,5 +1,179 @@
 # Changelog
 
+## 62.4.0 - 2019-08-22
+* [#926](https://github.com/stripe/stripe-go/pull/926) Add support for decimal amounts on Billing resources
+
+## 62.3.0 - 2019-08-22
+* [#928](https://github.com/stripe/stripe-go/pull/928) Bring retry code in-line with current best practices
+
+## 62.2.0 - 2019-08-21
+* [#922](https://github.com/stripe/stripe-go/pull/922) A few Billing changes
+  * Add `Schedule` to `Subscription`
+  * Add missing parameters for the Upcoming Invoice API: `Schedule`, `SubscriptionCancelAt`, `SubscriptionCancelNow`
+  * Add missing properties and parameters for a `SubscriptionSchedule` phase: `BillingThresholds`, `CollectionMethod`, `DefaultPaymentMethod`, `InvoiceSettings`
+* [#923](https://github.com/stripe/stripe-go/pull/923) Add support for `Mode` on Checkout `Session`
+
+## 62.1.2 - 2019-08-19
+* [#921](https://github.com/stripe/stripe-go/pull/921) Mark `Customer` as an invalid parameter on PaymentMethod creation
+
+## 62.1.1 - 2019-08-15
+* [#918](https://github.com/stripe/stripe-go/pull/918) Fix `RadarEarlyFraudWarnings` to use the proper API endpoint
+
+## 62.1.0 - 2019-08-15
+* [#916](https://github.com/stripe/stripe-go/pull/916)
+  * Add support for `PIN` on Issuing `Card` to reflect the status of a card's PIN
+  * Add support for `Executive` on Person create, update and list
+
+## 62.0.0 - 2019-08-14
+* [#915](https://github.com/stripe/stripe-go/pull/915) Move to API version [`2019-08-14`](https://stripe.com/docs/upgrades#2019-08-14) and other changes
+  * Pin to API version `2019-08-14`
+  * Rename `AccountCapabilityPlatformPayments` to `AccountCapabilityTransfers`
+  * Add `Executive` in `PersonRelationship`
+  * Remove `PayentMethodOptions` as there was a typo which was fixed
+  * Make `OffSession` only support booleans on `PaymentIntent`
+  * Remove `PaymentIntentLastPaymentError` and use `Error` instead
+  * Move `DeclineCode` on `Error` to the `DeclineCode` type instead of `string`
+* [#914](https://github.com/stripe/stripe-go/pull/914) Update webhook handler example to use `http.MaxBytesReader`
+
+## 61.27.0 - 2019-08-09
+* [#913](https://github.com/stripe/stripe-go/pull/913) Remove `SubscriptionScheduleRevision`
+  * Note that this is technically a breaking change, however we've chosen to release it as a minor version in light of the fact that this resource and its API methods were virtually unused.
+
+## 61.26.0 - 2019-08-08
+* [#911](https://github.com/stripe/stripe-go/pull/911)
+  * Add support for `PaymentMethodDetails.Card.Moto` on `Charge`
+  * Add support `StatementDescriptorSuffix` on `Charge` and `PaymentIntent`
+  * Add support `SubscriptionData.ApplicationFeePercent` on Checkout `Session`
+
+## 61.25.0 - 2019-07-30
+* [#910](https://github.com/stripe/stripe-go/pull/910) Add `balancetransaction` package with a `Get` and `List` methods
+
+## 61.24.0 - 2019-07-30
+* [#906](https://github.com/stripe/stripe-go/pull/906) Add decline code type and constants (for use with card errors)
+
+## 61.23.0 - 2019-07-29
+* [#879](https://github.com/stripe/stripe-go/pull/879) Add support for OAuth API endpoints
+
+## 61.22.0 - 2019-07-29
+* [#909](https://github.com/stripe/stripe-go/pull/909) Rename `PayentMethodOptions` to `PaymentMethodOptions` on `PaymentIntent` and `SetupIntent`. Keep the old name until the next major version for backwards-compatibility
+
+## 61.21.0 - 2019-07-26
+* [#904](https://github.com/stripe/stripe-go/pull/904) Add support for Klarna and source orders
+
+## 61.20.0 - 2019-07-25
+* [#897](https://github.com/stripe/stripe-go/pull/897) Add all missing error codes
+* [#903](https://github.com/stripe/stripe-go/pull/903) Disable HTTP/2 by default (until underlying bug in Go's implementation is fixed)
+* [#905](https://github.com/stripe/stripe-go/pull/905) Add missing `Authenticated` field for 3DS charges
+
+## 61.19.0 - 2019-07-22
+* [#902](https://github.com/stripe/stripe-go/pull/902) Add support for `StatementDescriptor` when capturing a `PaymentIntent`
+
+## 61.18.0 - 2019-07-19
+* [#898](https://github.com/stripe/stripe-go/pull/898) Add `Customer` filter when listing `CreditNote`
+* [#899](https://github.com/stripe/stripe-go/pull/899) Add `OffSession` parameter when updating `SubscriptionItem`
+
+## 61.17.0 - 2019-07-17
+* [#895](https://github.com/stripe/stripe-go/pull/895) Add `VoidedAt` on `CreditNote`
+
+## 61.16.0 - 2019-07-16
+* [#894](https://github.com/stripe/stripe-go/pull/894) Introduce encoding for high precision decimal fields
+
+## 61.15.0 - 2019-07-15
+* [#893](https://github.com/stripe/stripe-go/pull/893)
+  * Add support for `PaymentMethodOptions` on `PaymentIntent` and `SetupIntent`
+  * Add missing parameters to `PaymentIntentConfirmParams`
+
+## 61.14.0 - 2019-07-15
+* [#891](https://github.com/stripe/stripe-go/pull/891) Various changes relaed to SCA for Billing
+  * Add support for `PendingSetupIntent` on `Subscription`
+  * Add support for `PaymentBehavior` on `Subscription` creation and update
+  * Add support for `PaymentBehavior` on `SubscriptionItem` update
+  * Add support for `OffSession` when paying an `Invoice`
+  * Add support for `OffSession` on `Subscription` creation and update
+
+## 61.13.0 - 2019-07-05
+* [#888](https://github.com/stripe/stripe-go/pull/888) Add support for `SetupFutureUsage` on `PaymentIntent` update and confirm
+* [#890](https://github.com/stripe/stripe-go/pull/890) Add support for `SetupFutureUsage` on Checkout `Session`
+
+## 61.12.0 - 2019-07-01
+* [#887](https://github.com/stripe/stripe-go/pull/887) Allow `OffSession` to be a bool on `PaymentIntent` creation and confirmation
+
+## 61.11.0 - 2019-07-01
+* [#886](https://github.com/stripe/stripe-go/pull/886) Add `CardVerificationUnavailable` constant value
+
+## 61.10.0 - 2019-07-01
+* [#884](https://github.com/stripe/stripe-go/pull/884) Add support for the `SetupIntent` resource and APIs
+* [#885](https://github.com/stripe/stripe-go/pull/885) Quick fix to the `NextAction` property on `SetupIntent`
+
+## 61.9.0 - 2019-06-27
+* [#882](https://github.com/stripe/stripe-go/pull/882) Add `DefaultPaymentMethod` and `DefaultSource` to `SubscriptionSchedule`
+
+## 61.8.0 - 2019-06-27
+* **Note:** This release was deleted after we merged some bad code. Please use 61.9.0 instead.
+
+## 61.7.1 - 2019-06-25
+* [#881](https://github.com/stripe/stripe-go/pull/881) Documentation fixes
+
+## 61.7.0 - 2019-06-25
+* [#880](https://github.com/stripe/stripe-go/pull/880)
+  * Add support for `CollectionMethod` on `Invoice`, `Subscription` and `SubscriptionSchedule`
+  * Add support for `UnifiedProration` on `InvoiceLine`
+
+## 61.6.0 - 2019-06-24
+* [#878](https://github.com/stripe/stripe-go/pull/878) Enable request latency telemetry by default
+
+## 61.5.0 - 2019-06-20
+* [#877](https://github.com/stripe/stripe-go/pull/877) Add `CancellationReason` to `PaymentIntent`
+
+## 61.4.0 - 2019-06-18
+* [#845](https://github.com/stripe/stripe-go/pull/845) Add support for `CustomerBalanceTransaction` resource and APIs
+* [#875](https://github.com/stripe/stripe-go/pull/875) Add missing `Account` settings
+
+## 61.3.0 - 2019-06-18
+* [#874](https://github.com/stripe/stripe-go/pull/874) Log only to info on 402 errors from Stripe
+
+## 61.2.0 - 2019-06-14
+* [#870](https://github.com/stripe/stripe-go/pull/870) Add support for `MerchantAmount` `MerchantCurrency` to Issuing `Transaction`
+* [#871](https://github.com/stripe/stripe-go/pull/871) Add support for `SubmitType` to Checkout `Session`
+
+## 61.1.0 - 2019-06-06
+* [#867](https://github.com/stripe/stripe-go/pull/867) Add support for `Location` on Terminal `ConnectionToken`
+* [#868](https://github.com/stripe/stripe-go/pull/868) Add support for `Balance` and deprecate `AccountBalance` on Customer 
+
+## 61.0.1 - 2019-05-24
+* [#865](https://github.com/stripe/stripe-go/pull/865) Fix `earlyfraudwarning` client
+
+## 61.0.0 - 2019-05-24
+* [#864](https://github.com/stripe/stripe-go/pull/864) Pin library to API version `2019-05-16`
+
+## 60.19.0 - 2019-05-24
+* [#862](https://github.com/stripe/stripe-go/pull/862) Add support for `radar.early_fraud_warning` resource
+
+## 60.18.0 - 2019-05-22
+* [#861](https://github.com/stripe/stripe-go/pull/861) Add new tax ID types: `TaxIDTypeINGST` and `TaxIDTypeNOVAT`
+
+## 60.17.0 - 2019-05-16
+* [#860](https://github.com/stripe/stripe-go/pull/860) Add `OffSession` parameter to payment intents
+
+## 60.16.0 - 2019-05-14
+* [#859](https://github.com/stripe/stripe-go/pull/859) Add missing `InvoiceSettings` to `Customer`
+
+## 60.15.0 - 2019-05-14
+* [#855](https://github.com/stripe/stripe-go/pull/855) Add support for the capability resource and APIs
+
+## 60.14.0 - 2019-05-10
+* [#858](https://github.com/stripe/stripe-go/pull/858) Add `StartDate` to `Subscription`
+
+## 60.13.2 - 2019-05-10
+* [#857](https://github.com/stripe/stripe-go/pull/857) Fix invoice's `PaymentIntent` so its JSON tag uses API snakecase
+
+## 60.13.1 - 2019-05-08
+* [#853](https://github.com/stripe/stripe-go/pull/853) Add paymentmethod package to the clients list
+
+## 60.13.0 - 2019-05-07
+* [#850](https://github.com/stripe/stripe-go/pull/850) `OperatorAccount` is now deprecated across all Terminal endpoints
+* [#851](https://github.com/stripe/stripe-go/pull/851) Add `Customer` on the `Source` object
+
 ## 60.12.2 - 2019-05-06
 * [#843](https://github.com/stripe/stripe-go/pull/843) Lock mutex while in `SetBackends`
 

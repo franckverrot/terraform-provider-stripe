@@ -4,5 +4,5 @@ go 1.12
 
 require (
 	github.com/hashicorp/terraform v0.12.6
-	github.com/stripe/stripe-go v61.27.0+incompatible
+	github.com/stripe/stripe-go v62.4.0+incompatible
 )

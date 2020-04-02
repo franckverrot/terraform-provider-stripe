@@ -21,9 +21,9 @@ type AccountCapability string
 
 // List of values that AccountCapability can take.
 const (
-	AccountCapabilityCardPayments     AccountCapability = "card_payments"
-	AccountCapabilityLegacyPayments   AccountCapability = "legacy_payments"
-	AccountCapabilityPlatformPayments AccountCapability = "platform_payments"
+	AccountCapabilityCardPayments   AccountCapability = "card_payments"
+	AccountCapabilityLegacyPayments AccountCapability = "legacy_payments"
+	AccountCapabilityTransfers      AccountCapability = "transfers"
 )
 
 // AccountCapabilityStatus is the status a given capability can have
@@ -149,7 +149,9 @@ type AccountSettingsDashboardParams struct {
 // AccountSettingsPaymentsParams represent allowed parameters to configure settings  across payment
 // methods for charging on the account.
 type AccountSettingsPaymentsParams struct {
-	StatementDescriptor *string `form:"statement_descriptor"`
+	StatementDescriptor      *string `form:"statement_descriptor"`
+	StatementDescriptorKana  *string `form:"statement_descriptor_kana"`
+	StatementDescriptorKanji *string `form:"statement_descriptor_kanji"`
 }
 
 // AccountSettingsPayoutsParams represent allowed parameters to configure settings specific to the
@@ -275,9 +277,9 @@ type AccountBusinessProfile struct {
 
 // AccountCapabilities is the resource representing the capabilities enabled on that account.
 type AccountCapabilities struct {
-	CardPayments     AccountCapabilityStatus `json:"card_payments"`
-	LegacyPayments   AccountCapabilityStatus `json:"legacy_payments"`
-	PlatformPayments AccountCapabilityStatus `json:"platform_payments"`
+	CardPayments   AccountCapabilityStatus `json:"card_payments"`
+	LegacyPayments AccountCapabilityStatus `json:"legacy_payments"`
+	Transfers      AccountCapabilityStatus `json:"transfers"`
 }
 
 // AccountCompany represents details about the company or business associated with the account.
@@ -341,7 +343,9 @@ type AccountSettingsDashboard struct {
 // AccountSettingsPayments represents settings that apply across payment methods for charging on
 // the account.
 type AccountSettingsPayments struct {
-	StatementDescriptor string `json:"statement_descriptor"`
+	StatementDescriptor      string `json:"statement_descriptor"`
+	StatementDescriptorKana  string `json:"statement_descriptor_kana"`
+	StatementDescriptorKanji string `json:"statement_descriptor_kanji"`
 }
 
 // AccountSettingsPayouts represents settings specific to the account’s payouts.

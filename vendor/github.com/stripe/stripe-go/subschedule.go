@@ -44,15 +44,19 @@ type SubscriptionSchedulePhaseItemParams struct {
 // SubscriptionSchedulePhaseParams is a structure representing the parameters allowed to control
 // a phase on a subscription schedule.
 type SubscriptionSchedulePhaseParams struct {
-	ApplicationFeePercent *int64                                 `form:"application_fee_percent"`
-	Coupon                *string                                `form:"coupon"`
-	DefaultTaxRates       []*string                              `form:"default_tax_rates"`
-	EndDate               *int64                                 `form:"end_date"`
-	Iterations            *int64                                 `form:"iterations"`
-	Plans                 []*SubscriptionSchedulePhaseItemParams `form:"plans"`
-	StartDate             *int64                                 `form:"start_date"`
-	Trial                 *bool                                  `form:"trial"`
-	TrialEnd              *int64                                 `form:"trial_end"`
+	ApplicationFeePercent *int64                                     `form:"application_fee_percent"`
+	BillingThresholds     *SubscriptionBillingThresholdsParams       `form:"billing_thresholds"`
+	CollectionMethod      *string                                    `form:"collection_method"`
+	Coupon                *string                                    `form:"coupon"`
+	DefaultPaymentMethod  *string                                    `form:"default_payment_method"`
+	DefaultTaxRates       []*string                                  `form:"default_tax_rates"`
+	EndDate               *int64                                     `form:"end_date"`
+	InvoiceSettings       *SubscriptionScheduleInvoiceSettingsParams `form:"invoice_settings"`
+	Iterations            *int64                                     `form:"iterations"`
+	Plans                 []*SubscriptionSchedulePhaseItemParams     `form:"plans"`
+	StartDate             *int64                                     `form:"start_date"`
+	Trial                 *bool                                      `form:"trial"`
+	TrialEnd              *int64                                     `form:"trial_end"`
 
 	// This parameter is deprecated and we recommend that you use TaxRates instead.
 	TaxPercent *float64 `form:"tax_percent"`
@@ -68,17 +72,22 @@ type SubscriptionScheduleRenewalIntervalParams struct {
 // SubscriptionScheduleParams is the set of parameters that can be used when creating or updating a
 // subscription schedule.
 type SubscriptionScheduleParams struct {
-	Params            `form:"*"`
-	Billing           *string                                    `form:"billing"`
-	BillingThresholds *SubscriptionBillingThresholdsParams       `form:"billing_thresholds"`
-	Customer          *string                                    `form:"customer"`
-	FromSubscription  *string                                    `form:"from_subscription"`
-	InvoiceSettings   *SubscriptionScheduleInvoiceSettingsParams `form:"invoice_settings"`
-	Phases            []*SubscriptionSchedulePhaseParams         `form:"phases"`
-	Prorate           *bool                                      `form:"prorate"`
-	RenewalBehavior   *string                                    `form:"renewal_behavior"`
-	RenewalInterval   *SubscriptionScheduleRenewalIntervalParams `form:"renewal_interval"`
-	StartDate         *int64                                     `form:"start_date"`
+	Params               `form:"*"`
+	BillingThresholds    *SubscriptionBillingThresholdsParams       `form:"billing_thresholds"`
+	CollectionMethod     *string                                    `form:"collection_method"`
+	Customer             *string                                    `form:"customer"`
+	DefaultPaymentMethod *string                                    `form:"default_payment_method"`
+	DefaultSource        *string                                    `form:"default_source"`
+	FromSubscription     *string                                    `form:"from_subscription"`
+	InvoiceSettings      *SubscriptionScheduleInvoiceSettingsParams `form:"invoice_settings"`
+	Phases               []*SubscriptionSchedulePhaseParams         `form:"phases"`
+	Prorate              *bool                                      `form:"prorate"`
+	RenewalBehavior      *string                                    `form:"renewal_behavior"`
+	RenewalInterval      *SubscriptionScheduleRenewalIntervalParams `form:"renewal_interval"`
+	StartDate            *int64                                     `form:"start_date"`
+
+	// This parameter is deprecated and we recommend that you use CollectionMethod instead.
+	Billing *string `form:"billing"`
 }
 
 // SubscriptionScheduleCancelParams is the set of parameters that can be used when canceling a
@@ -134,13 +143,17 @@ type SubscriptionSchedulePhaseItem struct {
 
 // SubscriptionSchedulePhase is a structure a phase of a subscription schedule.
 type SubscriptionSchedulePhase struct {
-	ApplicationFeePercent float64                          `json:"application_fee_percent"`
-	Coupon                *Coupon                          `json:"coupon"`
-	DefaultTaxRates       []*TaxRate                       `json:"default_tax_rates"`
-	EndDate               int64                            `json:"end_date"`
-	Plans                 []*SubscriptionSchedulePhaseItem `json:"plans"`
-	StartDate             int64                            `json:"start_date"`
-	TrialEnd              int64                            `json:"trial_end"`
+	ApplicationFeePercent float64                              `json:"application_fee_percent"`
+	BillingThresholds     *SubscriptionBillingThresholds       `json:"billing_thresholds"`
+	CollectionMethod      SubscriptionCollectionMethod         `json:"collection_method"`
+	Coupon                *Coupon                              `json:"coupon"`
+	DefaultPaymentMethod  *PaymentMethod                       `json:"default_payment_method"`
+	DefaultTaxRates       []*TaxRate                           `json:"default_tax_rates"`
+	EndDate               int64                                `json:"end_date"`
+	InvoiceSettings       *SubscriptionScheduleInvoiceSettings `json:"invoice_settings"`
+	Plans                 []*SubscriptionSchedulePhaseItem     `json:"plans"`
+	StartDate             int64                                `json:"start_date"`
+	TrialEnd              int64                                `json:"trial_end"`
 
 	// This field is deprecated and we recommend that you use TaxRates instead.
 	TaxPercent float64 `json:"tax_percent"`
@@ -154,13 +167,15 @@ type SubscriptionScheduleRenewalInterval struct {
 
 // SubscriptionSchedule is the resource representing a Stripe subscription schedule.
 type SubscriptionSchedule struct {
-	Billing              SubscriptionBilling                  `json:"billing"`
 	BillingThresholds    *SubscriptionBillingThresholds       `json:"billing_thresholds"`
 	CanceledAt           int64                                `json:"canceled_at"`
+	CollectionMethod     SubscriptionCollectionMethod         `json:"collection_method"`
 	CompletedAt          int64                                `json:"completed_at"`
 	Created              int64                                `json:"created"`
 	CurrentPhase         *SubscriptionScheduleCurrentPhase    `json:"current_phase"`
 	Customer             *Customer                            `json:"customer"`
+	DefaultPaymentMethod *PaymentMethod                       `json:"default_payment_method"`
+	DefaultSource        *PaymentSource                       `json:"default_source"`
 	ID                   string                               `json:"id"`
 	InvoiceSettings      *SubscriptionScheduleInvoiceSettings `json:"invoice_settings"`
 	Livemode             bool                                 `json:"livemode"`
@@ -168,11 +183,13 @@ type SubscriptionSchedule struct {
 	Object               string                               `json:"object"`
 	Phases               []*SubscriptionSchedulePhase         `json:"phases"`
 	ReleasedSubscription *Subscription                        `json:"released_subscription"`
-	Revision             *SubscriptionScheduleRevision        `json:"revision"`
 	RenewalBehavior      SubscriptionScheduleRenewalBehavior  `json:"renewal_behavior"`
 	RenewalInterval      *SubscriptionScheduleRenewalInterval `json:"renewal_interval"`
 	Status               SubscriptionScheduleStatus           `json:"status"`
 	Subscription         *Subscription                        `json:"subscription"`
+
+	// This field is deprecated and we recommend that you use CollectionMethod instead.
+	Billing SubscriptionBilling `json:"billing"`
 }
 
 // SubscriptionScheduleList is a list object for subscription schedules.

@@ -14,7 +14,7 @@ github.com/apparentlymart/go-cidr/cidr
 github.com/apparentlymart/go-textseg/textseg
 # github.com/armon/go-radix v1.0.0
 github.com/armon/go-radix
-# github.com/aws/aws-sdk-go v1.20.19
+# github.com/aws/aws-sdk-go v1.21.7
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/credentials
 github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds
@@ -46,6 +46,7 @@ github.com/aws/aws-sdk-go/private/protocol/restxml
 github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil
 github.com/aws/aws-sdk-go/internal/sdkrand
 github.com/aws/aws-sdk-go/service/sts
+github.com/aws/aws-sdk-go/service/sts/stsiface
 github.com/aws/aws-sdk-go/aws/credentials/endpointcreds
 github.com/aws/aws-sdk-go/private/protocol/query
 github.com/aws/aws-sdk-go/private/protocol/json/jsonutil
@@ -103,7 +104,7 @@ github.com/hashicorp/hcl/hcl/scanner
 github.com/hashicorp/hcl/hcl/strconv
 github.com/hashicorp/hcl/json/scanner
 github.com/hashicorp/hcl/json/token
-# github.com/hashicorp/hcl2 v0.0.0-20190702185634-5b39d9ff3a9a
+# github.com/hashicorp/hcl2 v0.0.0-20190725010614-0c3fe388e450
 github.com/hashicorp/hcl2/hcl
 github.com/hashicorp/hcl2/hcl/hclsyntax
 github.com/hashicorp/hcl2/hcldec
@@ -118,9 +119,10 @@ github.com/hashicorp/hil
 github.com/hashicorp/hil/ast
 github.com/hashicorp/hil/parser
 github.com/hashicorp/hil/scanner
-# github.com/hashicorp/terraform v0.12.5
+# github.com/hashicorp/terraform v0.12.6
 github.com/hashicorp/terraform/plugin
 github.com/hashicorp/terraform/helper/schema
+github.com/hashicorp/terraform/helper/validation
 github.com/hashicorp/terraform/terraform
 github.com/hashicorp/terraform/configs/configschema
 github.com/hashicorp/terraform/helper/plugin
@@ -134,6 +136,7 @@ github.com/hashicorp/terraform/config
 github.com/hashicorp/terraform/config/hcl2shim
 github.com/hashicorp/terraform/helper/hashcode
 github.com/hashicorp/terraform/tfdiags
+github.com/hashicorp/terraform/helper/structure
 github.com/hashicorp/terraform/addrs
 github.com/hashicorp/terraform/config/module
 github.com/hashicorp/terraform/configs
@@ -192,16 +195,19 @@ github.com/satori/go.uuid
 # github.com/spf13/afero v1.2.1
 github.com/spf13/afero
 github.com/spf13/afero/mem
-# github.com/stripe/stripe-go v60.12.2+incompatible
+# github.com/stripe/stripe-go v62.4.0+incompatible
 github.com/stripe/stripe-go
 github.com/stripe/stripe-go/client
 github.com/stripe/stripe-go/form
 github.com/stripe/stripe-go/account
+github.com/stripe/stripe-go/accountlink
 github.com/stripe/stripe-go/applepaydomain
 github.com/stripe/stripe-go/balance
+github.com/stripe/stripe-go/balancetransaction
 github.com/stripe/stripe-go/bankaccount
 github.com/stripe/stripe-go/bitcoinreceiver
 github.com/stripe/stripe-go/bitcointransaction
+github.com/stripe/stripe-go/capability
 github.com/stripe/stripe-go/card
 github.com/stripe/stripe-go/charge
 github.com/stripe/stripe-go/checkout/session
@@ -209,6 +215,7 @@ github.com/stripe/stripe-go/countryspec
 github.com/stripe/stripe-go/coupon
 github.com/stripe/stripe-go/creditnote
 github.com/stripe/stripe-go/customer
+github.com/stripe/stripe-go/customerbalancetransaction
 github.com/stripe/stripe-go/discount
 github.com/stripe/stripe-go/dispute
 github.com/stripe/stripe-go/ephemeralkey
@@ -227,13 +234,17 @@ github.com/stripe/stripe-go/issuing/cardholder
 github.com/stripe/stripe-go/issuing/dispute
 github.com/stripe/stripe-go/issuing/transaction
 github.com/stripe/stripe-go/loginlink
+github.com/stripe/stripe-go/oauth
 github.com/stripe/stripe-go/order
 github.com/stripe/stripe-go/orderreturn
 github.com/stripe/stripe-go/paymentintent
+github.com/stripe/stripe-go/paymentmethod
 github.com/stripe/stripe-go/paymentsource
 github.com/stripe/stripe-go/payout
+github.com/stripe/stripe-go/person
 github.com/stripe/stripe-go/plan
 github.com/stripe/stripe-go/product
+github.com/stripe/stripe-go/radar/earlyfraudwarning
 github.com/stripe/stripe-go/radar/valuelist
 github.com/stripe/stripe-go/radar/valuelistitem
 github.com/stripe/stripe-go/recipient
@@ -241,6 +252,8 @@ github.com/stripe/stripe-go/refund
 github.com/stripe/stripe-go/reporting/reportrun
 github.com/stripe/stripe-go/reporting/reporttype
 github.com/stripe/stripe-go/reversal
+github.com/stripe/stripe-go/review
+github.com/stripe/stripe-go/setupintent
 github.com/stripe/stripe-go/sigma/scheduledqueryrun
 github.com/stripe/stripe-go/sku
 github.com/stripe/stripe-go/source
@@ -248,12 +261,12 @@ github.com/stripe/stripe-go/sourcetransaction
 github.com/stripe/stripe-go/sub
 github.com/stripe/stripe-go/subitem
 github.com/stripe/stripe-go/subschedule
-github.com/stripe/stripe-go/subschedulerevision
 github.com/stripe/stripe-go/taxid
 github.com/stripe/stripe-go/taxrate
 github.com/stripe/stripe-go/terminal/connectiontoken
 github.com/stripe/stripe-go/terminal/location
 github.com/stripe/stripe-go/terminal/reader
+github.com/stripe/stripe-go/threedsecure
 github.com/stripe/stripe-go/token
 github.com/stripe/stripe-go/topup
 github.com/stripe/stripe-go/transfer
@@ -277,7 +290,7 @@ github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/set
 github.com/zclconf/go-cty/cty/function
 github.com/zclconf/go-cty/cty/function/stdlib
-# github.com/zclconf/go-cty-yaml v0.1.0
+# github.com/zclconf/go-cty-yaml v1.0.1
 github.com/zclconf/go-cty-yaml
 # go.opencensus.io v0.18.0
 go.opencensus.io/trace
