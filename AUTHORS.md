@@ -7,7 +7,9 @@ In alphabetical order:
   * Clinton Blackburn
   * Franck Verrot
   * Hiroki Ito
+  * Marc Schiereck
   * Oleg Vaskevich
+  * Paul Padier
   * allanlegalstart
   * drselump14
   * florisvdg
