@@ -36,12 +36,14 @@ func resourceStripePlan() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 				Computed: true,
+				ConflictsWith: []string{"amount_decimal"},
 			},
 			"amount_decimal": &schema.Schema{
 				Type:     schema.TypeFloat,
 				Optional: true,
 				ForceNew: true,
 				Computed: true,
+				ConflictsWith: []string{"amount"},
 			},
 			"currency": &schema.Schema{
 				Type:     schema.TypeString,
