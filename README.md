@@ -15,24 +15,23 @@ Stripe infrastructure—products, plans, webhook endpoints—via Terraform.
 
 ## Building The Provider
 
-Clone repository to: `$GOPATH/src/github.com/franckverrot/terraform-provider-stripe`
+Clone repository anywhere:
 
 ```sh
-$ mkdir -p $GOPATH/src/github.com/franckverrot; cd $GOPATH/src/github.com/franckverrot
 $ git clone https://github.com/franckverrot/terraform-provider-stripe.git
 ```
 
 Enter the provider directory and build the provider
 
 ```sh
-$ cd $GOPATH/src/github.com/franckverrot/terraform-provider-stripe
-$ make build
+$ cd terraform-provider-stripe
+$ make compile
 ```
 
 Or alternatively, to install it as a plugin, run
 
 ```sh
-$ cd $GOPATH/src/github.com/franckverrot/terraform-provider-stripe
+$ cd terraform-provider-stripe
 $ make install
 ```
 
