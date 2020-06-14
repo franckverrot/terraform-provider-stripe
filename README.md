@@ -104,7 +104,7 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
 
 ### Supported resources
 
-- [x] [Products](https://stripe.com/docs/api/service_products)
+- [x] [Products](https://stripe.com/docs/api/products)
   - [x] name
   - [x] type
   - [x] active (Default: true)
