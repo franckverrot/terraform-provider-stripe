@@ -24,6 +24,7 @@ func resourceStripePlan() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
+				ForceNew: true,
 			},
 			"active": &schema.Schema{
 				Type:     schema.TypeBool,
