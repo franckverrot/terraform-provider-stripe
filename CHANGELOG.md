@@ -1,6 +1,23 @@
 # Changelog
 
-## February 1st 2010
+## UNRELEASED
+
+  * /
+
+## June 28th 2020 (v1.5.0)
+
+  * Add more consistency to plan creations
+    * force a new plan when changing/setting plan_id
+    * enforce using either `amount` or `amount_decimal`, not both
+  * Add support for decimal pricing and transform_usage
+  * Update dependencies
+  * Adapt connect account handling in webhooks
+  * Check existence of application in order to get connect-status
+  * Force new resource if connect status changes
+  * Improves docs
+
+
+## February 1st 2020 (v1.4.0)
 
   * Add tax rate
 

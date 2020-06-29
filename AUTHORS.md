@@ -13,3 +13,4 @@ In alphabetical order:
   * allanlegalstart
   * drselump14
   * florisvdg
+  * Till Klampaeckel
