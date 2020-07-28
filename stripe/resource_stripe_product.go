@@ -2,8 +2,8 @@ package stripe
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/client"
+	"github.com/stripe/stripe-go/v71"
+	"github.com/stripe/stripe-go/v71/client"
 
 	"fmt"
 	"log"
