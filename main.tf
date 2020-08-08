@@ -113,3 +113,20 @@ resource "stripe_tax_rate" "my_tax_rate" {
   display_name = "Twenty-one percent tax rate"
   inclusive    = true
 }
+
+resource "stripe_price" "my_price" {
+  active   = true
+  currency = "usd" # lowercase
+  metadata = {
+    blm = "always"
+  }
+  nickname    = "my price"
+  product     = "${stripe_product.my_product.id}"
+  unit_amount = 1337
+  recurring = {
+    interval       = "month"
+    interval_count = 1
+    usage_type     = "licensed"
+  }
+  billing_scheme = "per_unit"
+}
