@@ -4,6 +4,13 @@
 
   * /
 
+
+## August 8th 2020 (v1.6.0)
+
+  * Add support for prices
+  * Update dependencies
+
+
 ## June 28th 2020 (v1.5.0)
 
   * Add more consistency to plan creations
