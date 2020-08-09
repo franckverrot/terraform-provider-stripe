@@ -63,6 +63,13 @@ func resourceStripePrice() *schema.Resource {
 			},
 			"unit_amount": &schema.Schema{
 				Type:     schema.TypeInt,
+				Computed: true,
+				Optional: true,
+				ForceNew: true,
+			},
+			"unit_amount_decimal": &schema.Schema{
+				Type:     schema.TypeFloat,
+				Computed: true,
 				Optional: true,
 				ForceNew: true,
 			},
@@ -145,6 +152,10 @@ func resourceStripePriceCreate(d *schema.ResourceData, m interface{}) error {
 		params.UnitAmount = stripe.Int64(int64(unitAmount.(int)))
 	}
 
+	if unitAmountDecimal, ok := d.GetOk("unit_amount_decimal"); ok {
+		params.UnitAmountDecimal = stripe.Float64(unitAmountDecimal.(float64))
+	}
+
 	if billingScheme, ok := d.GetOk("billing_scheme"); ok {
 		params.BillingScheme = stripe.String(billingScheme.(string))
 	}
@@ -177,6 +188,7 @@ func resourceStripePriceRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("product", price.Livemode)
 		d.Set("recurring", price.Active)
 		d.Set("unit_amount", price.UnitAmount)
+		d.Set("unit_amount_decimal", price.UnitAmountDecimal)
 		d.Set("billing_scheme", price.BillingScheme)
 	}
 
