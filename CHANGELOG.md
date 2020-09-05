@@ -5,6 +5,11 @@
   * /
 
 
+## September 5th 2020 (v1.6.1)
+
+  * Add support for `unit_amount_decimal` for prices
+
+
 ## August 8th 2020 (v1.6.0)
 
   * Add support for prices
