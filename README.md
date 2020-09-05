@@ -7,10 +7,14 @@ Stripe infrastructure—products, plans, webhook endpoints—via Terraform.
 * Create and update resources in a repeatable manner
 * Clone resources across multiple Stripe accounts (e.g. different locales or brands)
 
+Since Terraform 13 and the Terraform Registry, no need to download a release
+or compile this on your own machine (unless you really want to.)  Just jump
+to the [Basic Usage](#basic-usage) section and get going!
+
 ## Requirements
 
-*	[Terraform](https://www.terraform.io/downloads.html) 0.11.x to 0.12.x
-*	[Go](https://golang.org/doc/install) 1.8 to 1.12 (to build the provider plugin)
+*	[Terraform](https://www.terraform.io/downloads.html) 0.11.x to 0.13.x
+*	[Go](https://golang.org/doc/install) 1.8 to 1.14 (to build the provider plugin)
 
 
 ## Building The Provider
@@ -57,6 +61,15 @@ The example below demonstrates the following operations:
   * create a webhook endpoint for a few events
 
 ```hcl
+terraform {
+  required_providers {
+    stripe = {
+      source = "franckverrot/stripe"
+      version = "1.6.1"
+    }
+  }
+}
+
 provider "stripe" {
   # NOTE: This is populated from the `TF_VAR_stripe_api_token` environment variable.
   api_token = "${var.stripe_api_token}"
@@ -238,4 +251,4 @@ $ $GOPATH/bin/terraform-provider-stripe
 
 ## License
 
-Mozilla Public License Version 2.0 – Franck Verrot – Copyright 2018
+Mozilla Public License Version 2.0 – Franck Verrot – Copyright 2018-2020

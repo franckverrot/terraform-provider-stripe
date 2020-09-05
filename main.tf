@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    stripe = {
+      source = "franckverrot/stripe"
+      version = "1.6.1"
+    }
+  }
+}
+
 variable "stripe_api_token" {} # populate this by exporting TF_VAR_stripe_api_token
 
 provider "stripe" {
