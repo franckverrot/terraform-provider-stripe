@@ -151,3 +151,37 @@ resource "stripe_price" "my_price" {
   }
   billing_scheme = "per_unit"
 }
+
+resource "stripe_price" "my_graduated_price" {
+  active   = true
+  currency = "usd" # lowercase
+  metadata = {
+    blm = "always"
+  }
+  nickname = "my graduated price"
+  product  = stripe_product.my_product.id
+
+  recurring = {
+    interval       = "month"
+    interval_count = 1
+    usage_type     = "licensed"
+  }
+
+  billing_scheme = "tiered"
+  tiers_mode     = "graduated"
+
+  tier {
+    up_to       = 10
+    unit_amount = 10
+  }
+
+  tier {
+    up_to       = 20
+    unit_amount = 20
+  }
+
+  tier {
+    up_to_inf   = true
+    unit_amount = 100
+  }
+}

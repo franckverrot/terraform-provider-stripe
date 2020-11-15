@@ -135,6 +135,8 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   - [x] unit_amount
   - [x] billing_scheme
   - [x] unit_amount_decimal
+  - [x] tiers (Stripe API doesn't provide the API to update this at the moment, so the deletion should be done via dashboard page)
+  - [x] tiers mode
 - [x] [Plans](https://stripe.com/docs/api/plans)
   - [x] active (Default: true)
   - [x] aggregate usage

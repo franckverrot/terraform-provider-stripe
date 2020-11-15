@@ -86,6 +86,56 @@ func resourceStripePrice() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
+			"tier": &schema.Schema{
+				Type: schema.TypeList,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"up_to": &schema.Schema{
+							Type:          schema.TypeInt,
+							Optional:      true,
+							ForceNew:      true,
+							ConflictsWith: []string{"tier.up_to_inf"},
+						},
+						"up_to_inf": &schema.Schema{
+							Type:          schema.TypeBool,
+							Optional:      true,
+							ForceNew:      true,
+							ConflictsWith: []string{"tier.up_to"},
+						},
+						"flat_amount": &schema.Schema{
+							Type:     schema.TypeInt,
+							Optional: true,
+							ForceNew: true,
+							Computed: true,
+						},
+						"flat_amount_decimal": &schema.Schema{
+							Type:     schema.TypeFloat,
+							Optional: true,
+							ForceNew: true,
+							Computed: true,
+						},
+						"unit_amount": &schema.Schema{
+							Type:     schema.TypeInt,
+							Optional: true,
+							ForceNew: true,
+							Computed: true,
+						},
+						"unit_amount_decimal": &schema.Schema{
+							Type:     schema.TypeFloat,
+							Optional: true,
+							ForceNew: true,
+							Computed: true,
+						},
+					},
+				},
+				Optional: true,
+				ForceNew: true,
+			},
+			"tiers_mode": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+			},
 		},
 	}
 }
@@ -134,6 +184,14 @@ func resourceStripePriceCreate(d *schema.ResourceData, m interface{}) error {
 
 	if _, ok := d.GetOk("nickname"); ok {
 		params.Nickname = stripe.String(nickname)
+	}
+
+	if tiersMode, ok := d.GetOk("tiers_mode"); ok {
+		params.TiersMode = stripe.String(tiersMode.(string))
+	}
+
+	if tiers, ok := d.GetOk("tier"); ok {
+		params.Tiers = expandPriceTiers(tiers.([]interface{}))
 	}
 
 	if product, ok := d.GetOk("product"); ok {
@@ -189,10 +247,50 @@ func resourceStripePriceRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("recurring", price.Active)
 		d.Set("unit_amount", price.UnitAmount)
 		d.Set("unit_amount_decimal", price.UnitAmountDecimal)
+		d.Set("tiers_mode", price.TiersMode)
+		// Stripe's API doesn't return tiers.
+		// d.Set("tier", flattenPriceTiers(price.Tiers))
 		d.Set("billing_scheme", price.BillingScheme)
 	}
 
 	return err
+}
+
+func flattenPriceTiers(in []*stripe.PriceTier) []map[string]interface{} {
+	out := make([]map[string]interface{}, len(in))
+	for i, tier := range in {
+		out[i] = map[string]interface{}{
+			"up_to":               tier.UpTo,
+			"up_to_inf":           tier.UpTo == 0,
+			"flat_amount":         tier.FlatAmount,
+			"flat_amount_decimal": tier.FlatAmountDecimal,
+			"unit_amount":         tier.UnitAmount,
+			"unit_amount_decimal": tier.UnitAmountDecimal,
+		}
+	}
+	return out
+}
+
+func expandPriceTiers(in []interface{}) []*stripe.PriceTierParams {
+	out := make([]*stripe.PriceTierParams, len(in))
+	for i, v := range in {
+		tier := v.(map[string]interface{})
+		out[i] = &stripe.PriceTierParams{
+			UpTo:    stripe.Int64(int64(tier["up_to"].(int))),
+			UpToInf: stripe.Bool(tier["up_to_inf"].(bool)),
+		}
+		if tier["flat_amount"] != nil {
+			out[i].FlatAmount = stripe.Int64(int64(tier["flat_amount"].(int)))
+		} else if tier["flat_amount_decimal"] != nil {
+			out[i].FlatAmountDecimal = stripe.Float64(tier["flat_amount_decimal"].(float64))
+		}
+		if tier["unit_amount"] != nil {
+			out[i].UnitAmount = stripe.Int64(int64(tier["unit_amount"].(int)))
+		} else if tier["unit_amount_decimal"] != nil {
+			out[i].UnitAmountDecimal = stripe.Float64(tier["unit_amount_decimal"].(float64))
+		}
+	}
+	return out
 }
 
 func resourceStripePriceUpdate(d *schema.ResourceData, m interface{}) error {
