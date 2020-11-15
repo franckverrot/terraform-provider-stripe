@@ -18,6 +18,11 @@ resource "stripe_product" "my_product" {
   type = "service"
 }
 
+resource "stripe_product" "free_product" {
+  name = "My Free Product"
+  type = "service"
+}
+
 resource "stripe_product" "my_product_with_id" {
   product_id = "my_product"
   name       = "My Product"
@@ -28,6 +33,13 @@ resource "stripe_plan" "my_product_plan" {
   product  = "${stripe_product.my_product.id}"
   amount   = 12345
   interval = "month" # day week month year
+  currency = "usd"
+}
+
+resource "stripe_plan" "free_product_plan" {
+  product  = "${stripe_product.free_product.id}"
+  amount   = 0
+  interval = "month"
   currency = "usd"
 }
 

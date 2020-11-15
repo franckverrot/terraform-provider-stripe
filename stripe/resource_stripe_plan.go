@@ -188,10 +188,13 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 		Currency:  stripe.String(planCurrency),
 	}
 
-	if amount, ok := d.GetOk("amount"); ok {
-		params.Amount = stripe.Int64(int64(amount.(int)))
-	} else if amountDecimal, ok := d.GetOk("amount_decimal"); ok {
-		params.AmountDecimal = stripe.Float64(amountDecimal.(float64))
+	amount := d.Get("amount").(int)
+	amountDecimal := d.Get("amount_decimal").(float64)
+
+	if amountDecimal > 0 {
+		params.AmountDecimal = stripe.Float64(float64(amountDecimal))
+	} else {
+		params.Amount = stripe.Int64(int64(amount))
 	}
 
 	if id, ok := d.GetOk("plan_id"); ok {
@@ -210,6 +213,7 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 		params.BillingScheme = stripe.String(billingScheme.(string))
 		if billingScheme == "tiered" {
 			params.Amount = nil
+			params.AmountDecimal = nil
 		}
 	}
 
