@@ -4,6 +4,11 @@
 
   * /
 
+## November 15th 2020 (v1.7.0)
+
+  * Add support tiered prices
+  * Add support for free plans
+
 
 ## September 5th 2020 (v1.6.1)
 
