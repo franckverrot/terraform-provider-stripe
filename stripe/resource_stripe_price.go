@@ -243,7 +243,9 @@ func resourceStripePriceRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("livemode", price.Livemode)
 		d.Set("metadata", price.Metadata)
 		d.Set("nickname", price.Nickname)
-		d.Set("product", price.Product.ID)
+		if price.Product != nil {
+			d.Set("product", price.Product.ID)
+		}
 		d.Set("recurring", price.Active)
 		d.Set("unit_amount", price.UnitAmount)
 		d.Set("unit_amount_decimal", price.UnitAmountDecimal)
