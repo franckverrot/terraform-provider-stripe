@@ -4,6 +4,11 @@
 
   * /
 
+## January 30th 2021 (v1.8.0)
+
+  * Make sure product prices are read properly
+
+
 ## November 15th 2020 (v1.7.0)
 
   * Add support tiered prices
