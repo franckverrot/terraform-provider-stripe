@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	stripe "github.com/stripe/stripe-go/v71"
-	"github.com/stripe/stripe-go/v71/client"
+	stripe "github.com/stripe/stripe-go/v72"
+	"github.com/stripe/stripe-go/v72/client"
 )
 
 func resourceStripeCoupon() *schema.Resource {
@@ -25,6 +25,12 @@ func resourceStripeCoupon() *schema.Resource {
 			"code": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true, // require it as the default one is more trouble than it's worth
+			},
+			"applies_to": &schema.Schema{
+				Type:     schema.TypeSet,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+				Optional: true,
+				ForceNew: true,
 			},
 			"amount_off": &schema.Schema{
 				Type:     schema.TypeInt,
@@ -156,6 +162,14 @@ func resourceStripeCouponCreate(d *schema.ResourceData, m interface{}) error {
 		params.RedeemBy = stripe.Int64(redeemByTime.Unix())
 	}
 
+	if appliesTo, ok := d.GetOk("applies_to"); ok {
+		params.AppliesTo = &stripe.CouponAppliesToParams{}
+
+		for _, productID := range appliesTo.(*schema.Set).List() {
+			params.AppliesTo.Products = append(params.AppliesTo.Products, stripe.String(productID.(string)))
+		}
+	}
+
 	params.Metadata = expandMetadata(d)
 
 	coupon, err := client.Coupons.New(params)
@@ -174,7 +188,11 @@ func resourceStripeCouponCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceStripeCouponRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*client.API)
-	coupon, err := client.Coupons.Get(d.Id(), nil)
+
+	params := &stripe.CouponParams{}
+	params.AddExpand("applies_to")
+
+	coupon, err := client.Coupons.Get(d.Id(), params)
 
 	if err != nil {
 		d.SetId("")
@@ -193,6 +211,7 @@ func resourceStripeCouponRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("times_redeemed", coupon.TimesRedeemed)
 		d.Set("valid", coupon.Valid)
 		d.Set("created", coupon.Valid)
+		setCouponAppliesTo(d, coupon)
 	}
 
 	return err
@@ -228,4 +247,19 @@ func resourceStripeCouponDelete(d *schema.ResourceData, m interface{}) error {
 	}
 
 	return err
+}
+
+func setCouponAppliesTo(d *schema.ResourceData, coupon *stripe.Coupon) {
+	var productIDs *schema.Set
+
+	if appliesTo := coupon.AppliesTo; appliesTo != nil {
+		productIDs = schema.NewSet(schema.HashString, []interface{}{})
+
+		for _, productID := range appliesTo.Products {
+			productIDs.Add(productID)
+		}
+
+	}
+
+	d.Set("applies_to", productIDs)
 }
