@@ -183,6 +183,7 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   - [x] display_name
   - [x] inclusive
   - [x] jurisdiction
+  - [x] percentage
   - [ ] DELETE API (Stripe API doesn't provide the API at the moment, so the deletion should be done via dashboard page)
   - Computed:
     - [x] created
