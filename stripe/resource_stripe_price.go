@@ -206,11 +206,11 @@ func resourceStripePriceCreate(d *schema.ResourceData, m interface{}) error {
 		params.Recurring = recurringParams
 	}
 
-	if unitAmount, ok := d.GetOk("unit_amount"); ok {
+	if unitAmount, ok := d.GetOkExists("unit_amount"); ok {
 		params.UnitAmount = stripe.Int64(int64(unitAmount.(int)))
 	}
 
-	if unitAmountDecimal, ok := d.GetOk("unit_amount_decimal"); ok {
+	if unitAmountDecimal, ok := d.GetOkExists("unit_amount_decimal"); ok {
 		params.UnitAmountDecimal = stripe.Float64(unitAmountDecimal.(float64))
 	}
 
