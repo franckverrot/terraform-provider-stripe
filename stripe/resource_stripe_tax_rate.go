@@ -20,44 +20,53 @@ func resourceStripeTaxRate() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"active": &schema.Schema{
-				Type:     schema.TypeBool,
-				Required: true,
+			"active": {
+				Type:        schema.TypeBool,
+				Required:    true,
+				Description: "Defaults to `true`. When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.",
 			},
-			"created": &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true,
+			"created": {
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "Time at which the object was created. Measured in seconds since the Unix epoch.",
 			},
-			"description": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"description": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "An arbitrary string attached to the tax rate for your internal use only. It will not be visible to your customers.",
 			},
-			"display_name": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			"display_name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.",
 			},
-			"inclusive": &schema.Schema{
-				Type:     schema.TypeBool,
-				Required: true,
+			"inclusive": {
+				Type:        schema.TypeBool,
+				Required:    true,
+				Description: "This specifies if the tax rate is inclusive or exclusive.",
 			},
-			"jurisdiction": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"jurisdiction": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The jurisdiction for the tax rate. You can use this label field for tax reporting purposes. It also appears on your customer’s invoice.",
 			},
-			"livemode": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
+			"livemode": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.",
 			},
-			"metadata": &schema.Schema{
+			"metadata": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
+				Optional:    true,
+				Description: "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
 			},
-			"percentage": &schema.Schema{
-				Type:     schema.TypeFloat,
-				Required: true,
+			"percentage": {
+				Type:        schema.TypeFloat,
+				Required:    true,
+				Description: "This represents the tax rate percent out of 100.",
 			},
 		},
 	}

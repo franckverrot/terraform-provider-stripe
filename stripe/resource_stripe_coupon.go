@@ -22,73 +22,87 @@ func resourceStripeCoupon() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"code": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true, // require it as the default one is more trouble than it's worth
+			"code": {
+				Type:        schema.TypeString,
+				Required:    true, // require it as the default one is more trouble than it's worth
+				Description: "The unique identifier of the coupon.",
 			},
-			"amount_off": &schema.Schema{
-				Type:     schema.TypeInt,
-				Optional: true,
-				ForceNew: true,
+			"amount_off": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.",
 			},
-			"currency": &schema.Schema{
-				Type:     schema.TypeString, // <- check values
-				Optional: true,
-				ForceNew: true,
+			"currency": {
+				Type:        schema.TypeString, // <- check values
+				Optional:    true,
+				ForceNew:    true,
+				Description: "If `amount_off` has been set, the three-letter ISO code for the currency of the amount to take off.",
 			},
-			"duration": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true, // forever | once | repeating
-				ForceNew: true,
+			"duration": {
+				Type:        schema.TypeString,
+				Required:    true, // forever | once | repeating
+				ForceNew:    true,
+				Description: "One of `forever`, `once`, and `repeating`. Describes how long a customer who applies this coupon will get the discount.",
 			},
-			"duration_in_months": &schema.Schema{
-				Type:     schema.TypeInt,
-				Optional: true,
-				ForceNew: true,
+			"duration_in_months": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "If `duration` is `repeating`, the number of months the coupon applies. Null if coupon `duration` is `forever` or `once`.",
 			},
-			"max_redemptions": &schema.Schema{
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  nil,
-				ForceNew: true,
+			"max_redemptions": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     nil,
+				ForceNew:    true,
+				Description: "Maximum number of times this coupon can be redeemed, in total, across all customers, before it is no longer valid.",
 			},
-			"metadata": &schema.Schema{
+			"metadata": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
+				Optional:    true,
+				Description: "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
 			},
-			"name": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"name": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Name of the coupon displayed to customers on for instance invoices or receipts.",
 			},
-			"percent_off": &schema.Schema{
-				Type:     schema.TypeFloat,
-				Optional: true,
-				ForceNew: true,
+			"percent_off": {
+				Type:        schema.TypeFloat,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Percent that will be taken off the subtotal of any invoices for this customer for the duration of the coupon. For example, a coupon with percent_off of 50 will make a $100 invoice $50 instead.",
 			},
-			"redeem_by": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+			"redeem_by": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Date after which the coupon can no longer be redeemed.",
 			},
 			// Computed
-			"valid": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
+			"valid": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Taking account of the above properties, whether this coupon can still be applied to a customer.",
 			},
-			"created": &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true,
+			"created": {
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "Time at which the object was created. Measured in seconds since the Unix epoch.",
 			},
-			"livemode": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
+			"livemode": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.",
 			},
-			"times_redeemed": &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true,
+			"times_redeemed": {
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "Number of times this coupon has been applied to a customer.",
 			},
 		},
 	}

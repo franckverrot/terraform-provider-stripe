@@ -24,44 +24,51 @@ func resourceStripeProduct() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"product_id": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-				ForceNew: true,
+			"product_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ForceNew:    true,
+				Description: "Unique identifier for the product.",
 			},
-			"name": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			"name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The product’s name, meant to be displayable to the customer. Whenever this product is sold via a subscription, name will show up on associated invoice line item descriptions.",
 			},
-			"type": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			"type": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "",
 			},
-			"active": &schema.Schema{
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
+			"active": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Whether the product is currently available for purchase. Defaults to `true`.",
 			},
-			"attributes": &schema.Schema{
+			"attributes": {
 				Type:     schema.TypeList,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Optional: true,
 			},
-			"metadata": &schema.Schema{
+			"metadata": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
+				Optional:    true,
+				Description: "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
 			},
-			"statement_descriptor": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"statement_descriptor": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Extra information about a product which will appear on your customer’s credit card statement. In the case that multiple products are billed at once, the first statement descriptor will be used.",
 			},
-			"unit_label": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"unit_label": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "A label that represents units of this product in Stripe and on customers’ receipts and invoices. When set, this will be included in associated invoice line item descriptions.",
 			},
 		},
 	}

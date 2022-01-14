@@ -19,23 +19,26 @@ func resourceStripeWebhookEndpoint() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"url": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
+			"url": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The URL of the webhook endpoint.",
 			},
-			"enabled_events": &schema.Schema{
-				Type:     schema.TypeList,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Required: true,
+			"enabled_events": {
+				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Required:    true,
+				Description: "The list of events to enable for this endpoint. `['*']` indicates that all events are enabled, except those that require explicit selection.",
 			},
-			"connect": &schema.Schema{
+			"connect": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				ForceNew: true,
 			},
-			"secret": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
+			"secret": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The endpoint’s secret, used to generate webhook signatures. Only returned at creation.",
 			},
 		},
 	}
