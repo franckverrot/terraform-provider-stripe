@@ -25,6 +25,7 @@ func Provider() terraform.ResourceProvider {
 			"stripe_product":          resourceStripeProduct(),
 			"stripe_tax_rate":         resourceStripeTaxRate(),
 			"stripe_webhook_endpoint": resourceStripeWebhookEndpoint(),
+			"stripe_customer_portal":  resourceCustomerPortal(),
 		},
 
 		ConfigureFunc: providerConfigure,
