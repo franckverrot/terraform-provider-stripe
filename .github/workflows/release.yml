@@ -21,6 +21,13 @@ jobs:
             CGO_ENABLED=0 GOOS=linux  GOARCH=amd64 go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-linux-amd64
             CGO_ENABLED=0 GOOS=linux  GOARCH=arm   go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-linux-arm
 
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
