@@ -21,7 +21,7 @@ func resourceCustomerPortal() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"business_profile": &schema.Schema{
-				Type: schema.TypeList,
+				Type: schema.TypeMap,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"privacy_policy_url": &schema.Schema{
@@ -41,11 +41,11 @@ func resourceCustomerPortal() *schema.Resource {
 				Required: true,
 			},
 			"features": &schema.Schema{
-				Type: schema.TypeList,
+				Type: schema.TypeMap,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"customer_update": &schema.Schema{
-							Type: schema.TypeList,
+							Type: schema.TypeMap,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"allowed_updates": &schema.Schema{
@@ -65,7 +65,7 @@ func resourceCustomerPortal() *schema.Resource {
 							Optional: true,
 						},
 						"invoice_history": &schema.Schema{
-							Type: schema.TypeList,
+							Type: schema.TypeMap,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"enabled": &schema.Schema{
@@ -77,7 +77,7 @@ func resourceCustomerPortal() *schema.Resource {
 							Optional: true,
 						},
 						"payment_method_update": &schema.Schema{
-							Type: schema.TypeList,
+							Type: schema.TypeMap,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"enabled": &schema.Schema{
@@ -89,11 +89,11 @@ func resourceCustomerPortal() *schema.Resource {
 							Optional: true,
 						},
 						"subscription_cancel": &schema.Schema{
-							Type: schema.TypeList,
+							Type: schema.TypeMap,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"cancellation_reason": &schema.Schema{
-										Type: schema.TypeList,
+										Type: schema.TypeMap,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 												"enabled": &schema.Schema{
@@ -131,7 +131,7 @@ func resourceCustomerPortal() *schema.Resource {
 							Optional: true,
 						},
 						"subscription_pause": &schema.Schema{
-							Type: schema.TypeList,
+							Type: schema.TypeMap,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"enabled": &schema.Schema{
@@ -143,7 +143,7 @@ func resourceCustomerPortal() *schema.Resource {
 							Optional: true,
 						},
 						"subscription_update": &schema.Schema{
-							Type: schema.TypeList,
+							Type: schema.TypeMap,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"default_allowed_updates": &schema.Schema{
