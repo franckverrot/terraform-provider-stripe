@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: golang:1.12.1
+      - image: golang:1.17.8
     working_directory: /terraform-provider-stripe
     steps:
       - checkout
@@ -10,6 +10,7 @@ jobs:
           name: Build
           command: |
             CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-darwin-amd64
+            CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-darwin-arm64
             CGO_ENABLED=0 GOOS=linux  GOARCH=386   go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-linux-386
             CGO_ENABLED=0 GOOS=linux  GOARCH=amd64 go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-linux-amd64
             CGO_ENABLED=0 GOOS=linux  GOARCH=arm   go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-stripe-linux-arm
@@ -26,7 +27,7 @@ jobs:
   release:
     working_directory: /build
     docker:
-      - image: golang:1.12.1
+      - image: golang:1.17.8
     steps:
       - attach_workspace:
           at: /
