@@ -185,3 +185,63 @@ resource "stripe_price" "my_graduated_price" {
     unit_amount = 100
   }
 }
+
+resource "stripe_customer_portal" "customer_portal" {
+
+  business_profile {
+    headline             = "Headline"
+    terms_of_service_url = "https://terms-of-service-url.example"
+    privacy_policy_url   = "https://privacy-policy-url.example"
+  }
+
+  features {
+
+    customer_update {
+      allowed_updates = ["email", "address", "shipping", "phone", "tax_id"]
+      enabled         = true
+    }
+
+    invoice_history {
+      enabled = true
+    }
+
+    payment_method_update {
+      enabled = true
+    }
+
+    subscription_cancel {
+      cancellation_reason {
+        enabled = true
+        options = ["too_expensive", "missing_features", "switched_service", "unused", "customer_service", "too_complex", "low_quality", "other"]
+      }
+      enabled            = true
+      mode               = "at_period_end"
+      proration_behavior = "none"
+
+    }
+
+    subscription_pause {
+      enabled = true
+    }
+
+    subscription_update {
+      default_allowed_updates = ["price", "quantity", "promotion_code"]
+      enabled                 = true
+      proration_behavior      = "none"
+
+      product {
+        id  = stripe_product.my_product.id
+        prices = [stripe_price.my_price.id]
+      }
+
+    }
+
+  }
+
+  metadata = {
+    key = "val"
+  }
+
+  default_return_url = "https://return.example"
+
+}
