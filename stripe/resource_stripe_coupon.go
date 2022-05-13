@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	stripe "github.com/stripe/stripe-go/v71"
-	"github.com/stripe/stripe-go/v71/client"
+	stripe "github.com/stripe/stripe-go/v72"
+	"github.com/stripe/stripe-go/v72/client"
 )
 
 func resourceStripeCoupon() *schema.Resource {
