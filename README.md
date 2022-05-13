@@ -188,6 +188,22 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
     - [x] created
     - [x] livemode
 
+- [x] [Customer Portal](https://stripe.com/docs/api/customer_portal)
+  - [x] business_profile
+    - [x] headline
+    - [x] privacy_policy_url
+    - [x] terms_of_service_url
+  - [x] features
+    - [x] customer_update
+      - [x] allowed_updates
+    - [x] invoice_history
+    - [x] payment_method_update
+    - [x] subscription_cancel
+    - [x] subscription_pause
+    - [x] subscription_update
+  - [x] default_return_url
+  - [x] metadata
+
 
 ### Importing existing resources
 
