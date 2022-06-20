@@ -150,7 +150,7 @@ resource "stripe_price" "my_price" {
     usage_type     = "licensed"
   }
   billing_scheme = "per_unit"
-  tax_behavior= "inclusive"
+  tax_behavior = "inclusive"
 }
 
 resource "stripe_price" "my_graduated_price" {
@@ -169,7 +169,7 @@ resource "stripe_price" "my_graduated_price" {
   }
 
   billing_scheme = "tiered"
-  tax_behavior= "inclusive"
+  tax_behavior = "inclusive"
   tiers_mode     = "graduated"
 
   tier {
