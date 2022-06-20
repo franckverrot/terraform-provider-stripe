@@ -150,6 +150,7 @@ resource "stripe_price" "my_price" {
     usage_type     = "licensed"
   }
   billing_scheme = "per_unit"
+  tax_behavior   = "exclusive"
 }
 
 resource "stripe_price" "my_graduated_price" {

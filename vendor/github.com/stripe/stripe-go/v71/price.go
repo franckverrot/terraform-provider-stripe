@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/stripe/stripe-go/v71/form"
+	"github.com/stripe/stripe-go/v72/form"
 )
 
 // PriceBillingScheme is the list of allowed values for a price's billing scheme.
@@ -15,6 +15,16 @@ const (
 	PriceBillingSchemePerUnit PriceBillingScheme = "per_unit"
 	PriceBillingSchemeTiered  PriceBillingScheme = "tiered"
 )
+
+// PriceTaxBehavior is the list of allowed values for a price's tax behavior.
+type PriceTaxBehavior string
+
+// List of values that PriceTaxBehavior can take.
+const {
+	PriceTaxBehaviorInclusive   PriceTaxBehavior = "inclusive"
+	PriceTaxBehaviorExclusive   PriceTaxBehavior = "exclusive"
+	PriceTaxBehaviorUnspecified PriceTaxBehavior = "unspecified"
+}
 
 // PriceRecurringAggregateUsage is the list of allowed values for a price's aggregate usage.
 type PriceRecurringAggregateUsage string
@@ -124,6 +134,7 @@ type PriceParams struct {
 	Params            `form:"*"`
 	Active            *bool                         `form:"active"`
 	BillingScheme     *string                       `form:"billing_scheme"`
+	TaxBehavior       *string                       `from:"tax_behavior"`
 	Currency          *string                       `form:"currency"`
 	LookupKey         *string                       `form:"lookup_key"`
 	Nickname          *string                       `form:"nickname"`
@@ -188,6 +199,7 @@ type Price struct {
 	APIResource
 	Active            bool                    `json:"active"`
 	BillingScheme     PriceBillingScheme      `json:"billing_scheme"`
+	TaxBehavior       PriceTaxBehavior        `json:"tax_behavior"`
 	Created           int64                   `json:"created"`
 	Currency          Currency                `json:"currency"`
 	Deleted           bool                    `json:"deleted"`

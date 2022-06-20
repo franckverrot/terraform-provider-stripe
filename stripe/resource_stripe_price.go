@@ -6,6 +6,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/hashicorp/terraform/helper/customdiff"
 	"github.com/hashicorp/terraform/helper/schema"
 	stripe "github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/client"
@@ -78,6 +79,10 @@ func resourceStripePrice() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"tax_behavior": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"created": &schema.Schema{
 				Type:     schema.TypeInt,
 				Computed: true,
@@ -137,6 +142,15 @@ func resourceStripePrice() *schema.Resource {
 				ForceNew: true,
 			},
 		},
+        CustomizeDiff: customdiff.All(
+            customdiff.ForceNewIfChange("tax_behavior", func (old, new, meta interface{}) bool {
+				// Once specified as either inclusive or exclusive, tax behavior cannot be changed.
+				if old.(string) == "inclusive" || old.(string) == "exclusive" {
+					return old.(string) != new.(string)
+				}
+				return false
+            }),
+       ),
 	}
 }
 
@@ -218,6 +232,10 @@ func resourceStripePriceCreate(d *schema.ResourceData, m interface{}) error {
 		params.BillingScheme = stripe.String(billingScheme.(string))
 	}
 
+	if taxBehavior, ok := d.GetOk("tax_behavior"); ok {
+		params.TaxBehavior = stripe.String(taxBehavior.(string))
+	}
+
 	price, err := client.Prices.New(params)
 	if err != nil {
 		return err
@@ -253,6 +271,7 @@ func resourceStripePriceRead(d *schema.ResourceData, m interface{}) error {
 		// Stripe's API doesn't return tiers.
 		// d.Set("tier", flattenPriceTiers(price.Tiers))
 		d.Set("billing_scheme", price.BillingScheme)
+		d.Set("tax_behavior", price.TaxBehavior)
 	}
 
 	return err
@@ -309,6 +328,10 @@ func resourceStripePriceUpdate(d *schema.ResourceData, m interface{}) error {
 
 	if d.HasChange("nickname") {
 		params.Nickname = stripe.String(d.Get("nickname").(string))
+	}
+
+	if d.HasChange("tax_behavior") {
+		params.TaxBehavior = stripe.String(d.Get("tax_behavior").(string))
 	}
 
 	_, err := client.Prices.Update(d.Id(), &params)
