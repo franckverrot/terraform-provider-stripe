@@ -22,119 +22,138 @@ func resourceStripePrice() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"price_id": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-				ForceNew: true,
+			"price_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ForceNew:    true,
+				Description: "Unique identifier for the price.",
 			},
-			"active": &schema.Schema{
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
+			"active": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Whether the price can be used for new purchases.",
 			},
-			"currency": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+			"currency": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
 			},
-			"metadata": &schema.Schema{
+			"metadata": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
+				Optional:    true,
+				Description: "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
 			},
-			"nickname": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"nickname": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "A brief description of the price, hidden from customers.",
 			},
-			"product": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+			"product": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "The ID of the product this price is associated with.",
 			},
-			"recurring": &schema.Schema{
+			"recurring": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
+				Optional:    true,
+				Description: "The recurring components of a price such as `interval` and `usage_type`.",
 			},
-			"unit_amount": &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true,
-				Optional: true,
-				ForceNew: true,
+			"unit_amount": {
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "The unit amount in cents to be charged, represented as a whole integer if possible. Only set if `billing_scheme=per_unit`.",
 			},
-			"unit_amount_decimal": &schema.Schema{
-				Type:     schema.TypeFloat,
-				Computed: true,
-				Optional: true,
-				ForceNew: true,
+			"unit_amount_decimal": {
+				Type:        schema.TypeFloat,
+				Computed:    true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "The unit amount in cents to be charged, represented as a decimal string with at most 12 decimal places. Only set if `billing_scheme=per_unit`.",
 			},
-			"billing_scheme": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+			"billing_scheme": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Describes how to compute the price per period. Either `per_unit` or `tiered`. `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in quantity (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`). `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.",
 			},
-			"created": &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true,
+			"created": {
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "Time at which the object was created. Measured in seconds since the Unix epoch.",
 			},
-			"livemode": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
+			"livemode": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.",
 			},
-			"tier": &schema.Schema{
+			"tier": {
 				Type: schema.TypeList,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"up_to": &schema.Schema{
+						"up_to": {
 							Type:          schema.TypeInt,
 							Optional:      true,
 							ForceNew:      true,
 							ConflictsWith: []string{"tier.up_to_inf"},
+							Description:   "Up to and including to this quantity will be contained in the tier.",
 						},
-						"up_to_inf": &schema.Schema{
+						"up_to_inf": {
 							Type:          schema.TypeBool,
 							Optional:      true,
 							ForceNew:      true,
 							ConflictsWith: []string{"tier.up_to"},
 						},
-						"flat_amount": &schema.Schema{
-							Type:     schema.TypeInt,
-							Optional: true,
-							ForceNew: true,
-							Computed: true,
+						"flat_amount": {
+							Type:        schema.TypeInt,
+							Optional:    true,
+							ForceNew:    true,
+							Computed:    true,
+							Description: "Price for the entire tier.",
 						},
-						"flat_amount_decimal": &schema.Schema{
-							Type:     schema.TypeFloat,
-							Optional: true,
-							ForceNew: true,
-							Computed: true,
+						"flat_amount_decimal": {
+							Type:        schema.TypeFloat,
+							Optional:    true,
+							ForceNew:    true,
+							Computed:    true,
+							Description: "Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.",
 						},
-						"unit_amount": &schema.Schema{
-							Type:     schema.TypeInt,
-							Optional: true,
-							ForceNew: true,
-							Computed: true,
+						"unit_amount": {
+							Type:        schema.TypeInt,
+							Optional:    true,
+							ForceNew:    true,
+							Computed:    true,
+							Description: "Per unit price for units relevant to the tier.",
 						},
-						"unit_amount_decimal": &schema.Schema{
-							Type:     schema.TypeFloat,
-							Optional: true,
-							ForceNew: true,
-							Computed: true,
+						"unit_amount_decimal": {
+							Type:        schema.TypeFloat,
+							Optional:    true,
+							ForceNew:    true,
+							Computed:    true,
+							Description: "Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.",
 						},
 					},
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Each element represents a pricing tier. This parameter requires `billing_scheme` to be set to `tiered`. See also the documentation for `billing_scheme`.",
 			},
-			"tiers_mode": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+			"tiers_mode": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Defines if the tiering price should be `graduated` or `volume` based. In `volume`-based tiering, the maximum quantity within a period determines the per unit price. In `graduated` tiering, pricing can change as the quantity grows.",
 			},
 		},
 	}
