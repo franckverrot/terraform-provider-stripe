@@ -4,6 +4,12 @@
 
   * /
 
+## June 20th 2022 (v1.9.0)
+
+  * Add support for customer portal
+  * Update Stripe SDK's version requirement
+
+
 ## January 30th 2021 (v1.8.0)
 
   * Make sure product prices are read properly

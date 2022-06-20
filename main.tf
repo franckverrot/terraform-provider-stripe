@@ -2,7 +2,7 @@ terraform {
   required_providers {
     stripe = {
       source = "franckverrot/stripe"
-      version = "1.7.0"
+      version = "1.9.0"
     }
   }
 }
