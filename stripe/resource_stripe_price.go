@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 	stripe "github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/client"
 )
@@ -136,6 +137,12 @@ func resourceStripePrice() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"tax_behavior": &schema.Schema{
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{"inclusive", "exclusive", "unspecified"}, false),
+				Default:      "unspecified",
+			},
 		},
 	}
 }
@@ -218,6 +225,10 @@ func resourceStripePriceCreate(d *schema.ResourceData, m interface{}) error {
 		params.BillingScheme = stripe.String(billingScheme.(string))
 	}
 
+	if taxBehavior, ok := d.GetOk("tax_behavior"); ok {
+		params.TaxBehavior = stripe.String(taxBehavior.(string))
+	}
+
 	price, err := client.Prices.New(params)
 	if err != nil {
 		return err
@@ -253,6 +264,7 @@ func resourceStripePriceRead(d *schema.ResourceData, m interface{}) error {
 		// Stripe's API doesn't return tiers.
 		// d.Set("tier", flattenPriceTiers(price.Tiers))
 		d.Set("billing_scheme", price.BillingScheme)
+		d.Set("tax_behavior", price.TaxBehavior)
 	}
 
 	return err
@@ -309,6 +321,15 @@ func resourceStripePriceUpdate(d *schema.ResourceData, m interface{}) error {
 
 	if d.HasChange("nickname") {
 		params.Nickname = stripe.String(d.Get("nickname").(string))
+	}
+
+	if d.HasChange("tax_behavior") {
+		old, _ := d.GetChange("tax_behavior")
+		if old.(string) == "inclusive" || old.(string) == "exclusive" {
+			return fmt.Errorf("[WARNING] Your tax_behavior attribute is set to \"%s\". The value of tax_behavior cannot be changed once it has been specified as inclusive or exclusive.", old.(string))
+		} else {
+			params.TaxBehavior = stripe.String(d.Get("tax_behavior").(string))
+		}
 	}
 
 	_, err := client.Prices.Update(d.Id(), &params)
