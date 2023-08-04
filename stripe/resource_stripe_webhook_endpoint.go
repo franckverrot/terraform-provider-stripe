@@ -5,8 +5,8 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
-	stripe "github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/client"
+	stripe "github.com/stripe/stripe-go/v72"
+	"github.com/stripe/stripe-go/v72/client"
 
 	"log"
 )
@@ -34,6 +34,7 @@ func resourceStripeWebhookEndpoint() *schema.Resource {
 			"connect": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
+				ForceNew: true,
 			},
 			"secret": &schema.Schema{
 				Type:     schema.TypeString,

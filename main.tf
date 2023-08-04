@@ -1,7 +1,16 @@
+terraform {
+  required_providers {
+    stripe = {
+      source = "franckverrot/stripe"
+      version = "1.9.0"
+    }
+  }
+}
+
 variable "stripe_api_token" {} # populate this by exporting TF_VAR_stripe_api_token
 
 provider "stripe" {
-  api_token = "${var.stripe_api_token}"
+  api_token = var.stripe_api_token
 }
 
 resource "stripe_product" "my_product" {
@@ -16,14 +25,21 @@ resource "stripe_product" "my_product_with_id" {
 }
 
 resource "stripe_plan" "my_product_plan" {
-  product  = "${stripe_product.my_product.id}"
+  product  = stripe_product.my_product.id
   amount   = 12345
   interval = "month" # day week month year
   currency = "usd"
 }
 
+resource "stripe_plan" "free_product_plan" {
+  product  = stripe_product.free_product.id
+  amount   = 0
+  interval = "month"
+  currency = "usd"
+}
+
 resource "stripe_plan" "my_product_metered_plan" {
-  product  = "${stripe_product.my_product.id}"
+  product  = stripe_product.my_product.id
   interval = "month"
   currency = "usd"
 
@@ -49,12 +65,30 @@ resource "stripe_plan" "my_product_metered_plan" {
 }
 
 resource "stripe_plan" "my_product_plan_with_id" {
-  plan_id  = "my_plan"
+  plan_id = "my_plan"
 
-  product  = "${stripe_product.my_product.id}"
+  product  = stripe_product.my_product.id
   amount   = 3232
   interval = "month" # day week month year
   currency = "usd"
+}
+
+resource "stripe_plan" "my_decimal_product_plan" {
+  product        = stripe_product.my_product.id
+  amount_decimal = 123.45
+  interval       = "month" # day week month year
+  currency       = "usd"
+}
+
+resource "stripe_plan" "my_transformed_product_plan" {
+  product  = stripe_product.my_product.id
+  amount   = 2401
+  interval = "month" # day week month year
+  currency = "usd"
+  transform_usage {
+    divide_by = 7
+    round     = "down"
+  }
 }
 
 resource "stripe_webhook_endpoint" "my_endpoint" {
@@ -69,7 +103,7 @@ resource "stripe_webhook_endpoint" "my_endpoint" {
 
 output "webhook_secret" {
   sensitive = true
-  value     = "${stripe_webhook_endpoint.my_endpoint.secret}"
+  value     = stripe_webhook_endpoint.my_endpoint.secret
 }
 
 resource "stripe_coupon" "mlk_day_coupon_25pc_off" {

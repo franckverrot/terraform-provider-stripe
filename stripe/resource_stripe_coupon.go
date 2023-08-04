@@ -9,8 +9,8 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
-	stripe "github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/client"
+	stripe "github.com/stripe/stripe-go/v72"
+	"github.com/stripe/stripe-go/v72/client"
 )
 
 func resourceStripeCoupon() *schema.Resource {

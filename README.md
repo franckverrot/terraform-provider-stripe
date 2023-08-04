@@ -7,32 +7,35 @@ Stripe infrastructure—products, plans, webhook endpoints—via Terraform.
 * Create and update resources in a repeatable manner
 * Clone resources across multiple Stripe accounts (e.g. different locales or brands)
 
+Since Terraform 13 and the Terraform Registry, no need to download a release
+or compile this on your own machine (unless you really want to.)  Just jump
+to the [Basic Usage](#basic-usage) section and get going!
+
 ## Requirements
 
-*	[Terraform](https://www.terraform.io/downloads.html) 0.11.x to 0.12.x
-*	[Go](https://golang.org/doc/install) 1.8 to 1.12 (to build the provider plugin)
+*	[Terraform](https://www.terraform.io/downloads.html) 0.11.x to 0.13.x
+*	[Go](https://golang.org/doc/install) 1.8 to 1.14 (to build the provider plugin)
 
 
 ## Building The Provider
 
-Clone repository to: `$GOPATH/src/github.com/franckverrot/terraform-provider-stripe`
+Clone repository anywhere:
 
 ```sh
-$ mkdir -p $GOPATH/src/github.com/franckverrot; cd $GOPATH/src/github.com/franckverrot
 $ git clone https://github.com/franckverrot/terraform-provider-stripe.git
 ```
 
 Enter the provider directory and build the provider
 
 ```sh
-$ cd $GOPATH/src/github.com/franckverrot/terraform-provider-stripe
-$ make build
+$ cd terraform-provider-stripe
+$ make compile
 ```
 
 Or alternatively, to install it as a plugin, run
 
 ```sh
-$ cd $GOPATH/src/github.com/franckverrot/terraform-provider-stripe
+$ cd terraform-provider-stripe
 $ make install
 ```
 
@@ -58,6 +61,15 @@ The example below demonstrates the following operations:
   * create a webhook endpoint for a few events
 
 ```hcl
+terraform {
+  required_providers {
+    stripe = {
+      source = "franckverrot/stripe"
+      version = "1.8.0"
+    }
+  }
+}
+
 provider "stripe" {
   # NOTE: This is populated from the `TF_VAR_stripe_api_token` environment variable.
   api_token = "${var.stripe_api_token}"
@@ -105,7 +117,7 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
 
 ### Supported resources
 
-- [x] [Products](https://stripe.com/docs/api/service_products)
+- [x] [Products](https://stripe.com/docs/api/products)
   - [x] name
   - [x] type
   - [x] active (Default: true)
@@ -113,10 +125,23 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   - [x] metadata (map)
   - [x] statement descriptor
   - [x] unit label
+- [x] [Prices](https://stripe.com/docs/api/prices)
+  - [x] active (Default: true)
+  - [x] currency
+  - [x] metadata (map)
+  - [x] nickname
+  - [x] product
+  - [x] recurring
+  - [x] unit_amount
+  - [x] billing_scheme
+  - [x] unit_amount_decimal
+  - [x] tiers (Stripe API doesn't provide the API to update this at the moment, so the deletion should be done via dashboard page)
+  - [x] tiers mode
 - [x] [Plans](https://stripe.com/docs/api/plans)
   - [x] active (Default: true)
   - [x] aggregate usage
   - [x] amount
+  - [x] amount_decimal
   - [x] billing scheme (Default: per_unit)
   - [x] currency
   - [x] interval
@@ -126,7 +151,7 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
   - [x] product
   - [x] tiers
   - [x] tiers mode
-  - [ ] transform_usage
+  - [x] transform_usage
   - [x] trial period days
   - [x] usage type (Default: licensed)
 - [x] [Webhook Endpoints](https://stripe.com/docs/api/webhook_endpoints)
@@ -151,6 +176,33 @@ resource "stripe_coupon" "mlk_day_coupon_25pc_off" {
     - [x] created
     - [x] livemode
     - [x] times redeemed
+- [x] [TaxRates](https://stripe.com/docs/api/tax_rates)
+  - [x] code (aka `id`)
+  - [x] active
+  - [x] description
+  - [x] display_name
+  - [x] inclusive
+  - [x] jurisdiction
+  - [ ] DELETE API (Stripe API doesn't provide the API at the moment, so the deletion should be done via dashboard page)
+  - Computed:
+    - [x] created
+    - [x] livemode
+
+- [x] [Customer Portal](https://stripe.com/docs/api/customer_portal)
+  - [x] business_profile
+    - [x] headline
+    - [x] privacy_policy_url
+    - [x] terms_of_service_url
+  - [x] features
+    - [x] customer_update
+      - [x] allowed_updates
+    - [x] invoice_history
+    - [x] payment_method_update
+    - [x] subscription_cancel
+    - [x] subscription_pause
+    - [x] subscription_update
+  - [x] default_return_url
+  - [x] metadata
 
 
 ### Importing existing resources
@@ -217,4 +269,4 @@ $ $GOPATH/bin/terraform-provider-stripe
 
 ## License
 
-Mozilla Public License Version 2.0 – Franck Verrot – Copyright 2018
+Mozilla Public License Version 2.0 – Franck Verrot – Copyright 2018-2020
