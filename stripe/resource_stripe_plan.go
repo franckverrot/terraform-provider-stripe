@@ -2,7 +2,9 @@ package stripe
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 	stripe "github.com/stripe/stripe-go/v72"
@@ -262,12 +264,17 @@ func resourceStripePlanCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*client.API)
-	plan, err := client.Plans.Get(d.Id(), nil)
+	return resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		client := m.(*client.API)
+		plan, err := client.Plans.Get(d.Id(), nil)
+		if err != nil {
+			if sErr, ok := err.(*stripe.Error); ok && sErr.HTTPStatusCode == http.StatusTooManyRequests {
+				return resource.RetryableError(sErr)
+			}
+			d.SetId("")
+			return resource.NonRetryableError(err)
+		}
 
-	if err != nil {
-		d.SetId("")
-	} else {
 		d.Set("plan_id", plan.ID)
 		d.Set("active", plan.Active)
 		d.Set("aggregate_usage", plan.AggregateUsage)
@@ -279,15 +286,15 @@ func resourceStripePlanRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("interval_count", plan.IntervalCount)
 		d.Set("metadata", plan.Metadata)
 		d.Set("nickname", plan.Nickname)
-		d.Set("product", plan.Product)
+		d.Set("product", plan.Product.ID)
 		d.Set("tiers_mode", plan.TiersMode)
 		d.Set("tier", flattenPlanTiers(plan.Tiers))
 		d.Set("transform_usage", flattenPlanTransformUsage(plan.TransformUsage))
 		d.Set("trial_period_days", plan.TrialPeriodDays)
 		d.Set("usage_type", plan.UsageType)
-	}
 
-	return err
+		return nil
+	})
 }
 
 func flattenPlanTiers(in []*stripe.PlanTier) []map[string]interface{} {

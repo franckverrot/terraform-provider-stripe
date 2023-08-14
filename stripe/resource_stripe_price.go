@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
+	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	stripe "github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/client"
@@ -230,32 +232,42 @@ func resourceStripePriceCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStripePriceRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*client.API)
-	price, err := client.Prices.Get(d.Id(), nil)
+	return resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		client := m.(*client.API)
+		price, err := client.Prices.Get(d.Id(), nil)
 
-	if err != nil {
-		d.SetId("")
-	} else {
-		d.Set("price_id", price.ID)
-		d.Set("active", price.Active)
-		d.Set("created", price.Created)
-		d.Set("currency", price.Currency)
-		d.Set("livemode", price.Livemode)
-		d.Set("metadata", price.Metadata)
-		d.Set("nickname", price.Nickname)
-		if price.Product != nil {
-			d.Set("product", price.Product.ID)
+		if err != nil {
+			if sErr, ok := err.(*stripe.Error); ok && sErr.HTTPStatusCode == http.StatusTooManyRequests {
+				return resource.RetryableError(sErr)
+			}
+			d.SetId("")
+			return resource.NonRetryableError(err)
 		}
-		d.Set("recurring", price.Active)
-		d.Set("unit_amount", price.UnitAmount)
-		d.Set("unit_amount_decimal", price.UnitAmountDecimal)
-		d.Set("tiers_mode", price.TiersMode)
-		// Stripe's API doesn't return tiers.
-		// d.Set("tier", flattenPriceTiers(price.Tiers))
-		d.Set("billing_scheme", price.BillingScheme)
-	}
 
-	return err
+		if err != nil {
+			d.SetId("")
+		} else {
+			d.Set("price_id", price.ID)
+			d.Set("active", price.Active)
+			d.Set("created", price.Created)
+			d.Set("currency", price.Currency)
+			d.Set("livemode", price.Livemode)
+			d.Set("metadata", price.Metadata)
+			d.Set("nickname", price.Nickname)
+			if price.Product != nil {
+				d.Set("product", price.Product.ID)
+			}
+			d.Set("recurring", price.Active)
+			d.Set("unit_amount", price.UnitAmount)
+			d.Set("unit_amount_decimal", price.UnitAmountDecimal)
+			d.Set("tiers_mode", price.TiersMode)
+			// Stripe's API doesn't return tiers.
+			// d.Set("tier", flattenPriceTiers(price.Tiers))
+			d.Set("billing_scheme", price.BillingScheme)
+		}
+
+		return nil
+	})
 }
 
 func flattenPriceTiers(in []*stripe.PriceTier) []map[string]interface{} {

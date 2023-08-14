@@ -1,6 +1,9 @@
 package stripe
 
 import (
+	"net/http"
+
+	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/client"
@@ -123,23 +126,28 @@ func resourceStripeProductCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStripeProductRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*client.API)
-	product, err := client.Products.Get(d.Id(), nil)
+	return resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		client := m.(*client.API)
+		product, err := client.Products.Get(d.Id(), nil)
+		if err != nil {
+			if sErr, ok := err.(*stripe.Error); ok && sErr.HTTPStatusCode == http.StatusTooManyRequests {
+				return resource.RetryableError(sErr)
+			}
+			d.SetId("")
+			return resource.NonRetryableError(err)
+		}
 
-	if err != nil {
-		return err
-	}
+		d.Set("product_id", product.ID)
+		d.Set("name", product.Name)
+		d.Set("type", product.Type)
+		d.Set("active", product.Active)
+		d.Set("attributes", product.Attributes)
+		d.Set("metadata", product.Metadata)
+		d.Set("statement_descriptor", product.StatementDescriptor)
+		d.Set("unit_label", product.UnitLabel)
 
-	d.Set("product_id", product.ID)
-	d.Set("name", product.Name)
-	d.Set("type", product.Type)
-	d.Set("active", product.Active)
-	d.Set("attributes", product.Attributes)
-	d.Set("metadata", product.Metadata)
-	d.Set("statement_descriptor", product.StatementDescriptor)
-	d.Set("unit_label", product.UnitLabel)
-
-	return nil
+		return nil
+	})
 }
 
 func resourceStripeProductUpdate(d *schema.ResourceData, m interface{}) error {
